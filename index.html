@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bimbel Bisa Education - Smart Learning</title>
+    <meta name="description" content="Profil tutor profesional di Bisa Education Tasikmalaya.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://bisaeducation.static2.website/">
+    <meta property="og:title" content="Bisa Education - Bimbel Asik di Tasikmalaya">
+    <meta property="og:description" content="Dokumentasi kegiatan dan profil tutor profesional di Bisa Education.">
+    <meta property="og:image" content="https://iili.io/BiNUvSa.png">
+
+    <link rel="icon" type="image/png" href="https://iili.io/BiNUvSa.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Poppins', sans-serif; scroll-behavior: smooth; }
+        
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        #content-container {
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .nav-link:hover { color: #059669; }
+    </style>
+</head>
+<body class="bg-white text-gray-800">
+
+    <nav class="fixed top-0 w-full z-50 glass-nav border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="window.location.reload()">
+                    <img src="bisa.png" alt="Logo" class="h-12 w-auto object-contain">
+                    <div class="flex flex-col leading-tight border-l-2 border-gray-200 pl-3">
+                        <span class="text-lg font-extrabold text-emerald-900 tracking-tight leading-none uppercase">BISA</span>
+                        <span class="text-[10px] font-bold text-emerald-600 tracking-[0.15em] leading-none uppercase">Education</span>
+                    </div>
+                </div>
+
+                <div class="hidden md:flex space-x-7 font-semibold text-gray-600 text-sm">
+                    <a href="#" class="text-emerald-700">Beranda</a>
+                    <a href="#program" class="nav-link transition">Program</a>
+                    <a href="berita.html" class="nav-link transition">Berita</a>
+                    <a href="pengurus.html" class="nav-link transition">Pengurus</a>
+                    <a href="kegiatan.html" class="nav-link transition">Kegiatan</a>
+                    <a href="tutor.html" class="nav-link transition">Profil Tutor</a>
+                </div>
+
+                <div class="hidden md:flex items-center">
+                    <a href="#kontak" class="bg-emerald-800 text-white px-6 py-2.5 rounded-full font-bold text-sm hover:bg-emerald-900 transition shadow-lg shadow-emerald-100">
+                         Hubungi Kami
+                    </a>
+                </div>
+
+                <div class="md:hidden">
+                    <button onclick="toggleMenu()" class="p-2 text-gray-600 focus:outline-none">
+                        <i class="fa fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div id="mobile-menu" class="fixed inset-0 bg-white z-[60] transform translate-x-full transition-transform duration-300 md:hidden p-6 shadow-2xl">
+        <div class="flex justify-between items-center mb-10">
+            <div class="flex items-center space-x-2">
+                <img src="bisa.png" alt="Logo" class="h-8 w-auto">
+                <span class="text-xl font-bold text-emerald-900 uppercase">Bisa Education</span>
+            </div>
+            <button onclick="toggleMenu()" class="text-4xl text-gray-300 hover:text-red-500">&times;</button>
+        </div>
+        <div class="flex flex-col space-y-5 text-lg font-semibold text-gray-700">
+            <a href="javascript:void(0)" onclick="location.reload()" class="nav-link transition text-emerald-700">Beranda</a>
+            <a href="#program" onclick="toggleMenu()"><i class="fa fa-book-open w-10 text-emerald-700"></i> Program Belajar</a>
+            <a href="kegiatan.html"><i class="fa fa-calendar-alt w-10 text-emerald-700"></i> Kegiatan</a>
+            <a href="tutor.html"><i class="fa fa-chalkboard-teacher w-10 text-emerald-700"></i> Profil Tutor</a>
+            <div class="pt-10">
+                <a href="#kontak" onclick="toggleMenu()" class="block w-full bg-emerald-800 text-white text-center py-4 rounded-xl font-bold shadow-lg">Kirim Pesan</a>
+            </div>
+        </div>
+    </div>
+
+    <main id="content-container" class="pt-20">
+        
+        <section class="relative bg-emerald-900 py-24 px-6 overflow-hidden">
+            <div class="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-emerald-800 rounded-full opacity-50"></div>
+            <div class="absolute bottom-0 left-0 -mb-20 -ml-20 w-64 h-64 bg-emerald-700 rounded-full opacity-30"></div>
+
+            <div class="max-w-7xl mx-auto relative z-10 flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 text-white text-center md:text-left">
+                    <span class="inline-block px-4 py-1 bg-emerald-700 rounded-full text-[10px] font-bold uppercase tracking-widest mb-6">Pusat Belajar Tasikmalaya</span>
+                    <h1 class="text-4xl md:text-6xl font-extrabold leading-tight">
+                        Bisa Belajar, <br><span class="text-emerald-400">Bisa Berprestasi.</span>
+                    </h1>
+                    <p class="mt-6 text-emerald-100 text-lg max-w-lg mx-auto md:mx-0">
+                        Metode belajar adaptif dan menyenangkan untuk meraih masa depan akademis yang lebih cerah.
+                    </p>
+                    <div class="mt-10">
+                        <a href="#program" class="bg-white text-emerald-900 px-10 py-4 rounded-full font-bold shadow-xl hover:bg-emerald-100 transition inline-block">
+                           Lihat Program Kami
+                        </a>
+                    </div>
+                </div>
+                <div class="md:w-1/2 mt-16 md:mt-0 flex justify-center">
+                    <img src="bisa.png" alt="Bisa Education" class="w-64 md:w-80 drop-shadow-2xl">
+                </div>
+            </div>
+        </section>
+
+        <section id="program" class="py-24 px-6 bg-white">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl font-bold text-emerald-900 uppercase">Program Unggulan</h2>
+                    <div class="w-20 h-1.5 bg-emerald-500 mx-auto mt-4 rounded-full"></div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                    <div class="bg-gray-50 p-8 rounded-[2rem] border border-gray-100 hover:shadow-2xl transition group text-center">
+                        <div class="w-16 h-16 bg-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-emerald-600 transition">
+                            <i class="fa fa-child text-2xl text-emerald-600 group-hover:text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-emerald-900 mb-3">SD (Kelas 1-6)</h3>
+                        <p class="text-gray-500 text-sm mb-8 leading-relaxed">Untuk Bimbingan Soal TKA dan Pendalaman Materi Sekolah</p>
+                        <a href="#kontak" class="block py-3 bg-white border-2 border-emerald-800 text-emerald-800 font-bold rounded-xl hover:bg-emerald-800 hover:text-white transition">Daftar Sekarang</a>
+                    </div>
+                    <div class="bg-gray-50 p-8 rounded-[2rem] border border-gray-100 hover:shadow-2xl transition group text-center">
+                        <div class="w-16 h-16 bg-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-emerald-600 transition">
+                            <i class="fa fa-book-open text-2xl text-emerald-600 group-hover:text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-emerald-900 mb-3">SMP (Kelas 7-9)</h3>
+                        <p class="text-gray-500 text-sm mb-8 leading-relaxed">Fokus Materi soal TKA dan persiapan masuk SMA favorit.</p>
+                        <a href="#kontak" class="block py-3 bg-white border-2 border-emerald-800 text-emerald-800 font-bold rounded-xl hover:bg-emerald-800 hover:text-white transition">Daftar Sekarang</a>
+                    </div>
+                    <div class="bg-gray-50 p-8 rounded-[2rem] border border-gray-100 hover:shadow-2xl transition group text-center scale-105 shadow-xl border-emerald-100">
+                        <div class="w-16 h-16 bg-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                            <i class="fa fa-graduation-cap text-2xl text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-emerald-900 mb-3">SMA + UTBK</h3>
+                        <p class="text-gray-500 text-sm mb-8 leading-relaxed">Strategi tembus PTN impian dan Bimbingan soal soal UTBK</p>
+                        <a href="#kontak" class="block py-3 bg-emerald-800 text-white font-bold rounded-xl hover:bg-emerald-900 transition shadow-lg">Daftar Sekarang</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="kontak" class="py-24 px-6 bg-emerald-50">
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row gap-16 items-center">
+                <div class="md:w-1/2">
+                    <h2 class="text-4xl font-extrabold text-emerald-900 mb-6 uppercase">Konsultasi <br>Gratis Sekarang</h2>
+                    <p class="text-gray-600 mb-8 text-lg">Pesan anda akan langsung terkirim ke email <strong>bisaeducationtsm@gmail.com</strong>. Admin kami akan segera menghubungi anda kembali.</p>
+                    <div class="flex items-center space-x-4 mb-4 text-emerald-800">
+                        <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-md">
+                            <i class="fa fa-envelope"></i>
+                        </div>
+                        <span class="font-semibold text-sm">bisaeducationtsm@gmail.com</span>
+                    </div>
+                </div>
+
+                <div class="md:w-1/2 w-full bg-white p-8 md:p-10 rounded-[2.5rem] shadow-2xl border border-emerald-100">
+                    <form id="contactForm" class="space-y-5">
+                        <div>
+                            <label class="block text-sm font-bold text-emerald-900 mb-2">Nama Lengkap</label>
+                            <input type="text" name="nama" required placeholder="Masukkan Nama Anda" 
+                                   class="w-full px-5 py-3 rounded-2xl border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-emerald-900 mb-2">Nomor WhatsApp</label>
+                            <input type="number" name="wa" required placeholder="Contoh: 08123456xxxx" 
+                                   class="w-full px-5 py-3 rounded-2xl border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-emerald-900 mb-2">Pesan Anda</label>
+                            <textarea name="pesan" rows="4" required placeholder="Tanyakan info pendaftaran atau program..." 
+                                      class="w-full px-5 py-3 rounded-2xl border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition"></textarea>
+                        </div>
+                        <button type="submit" id="btnKirim" class="w-full bg-emerald-700 text-white font-bold py-4 rounded-2xl hover:bg-emerald-800 transition shadow-lg">
+                            Kirim Pesan ke Gmail
+                        </button>
+                    </form>
+                    <div id="statusPesan" class="mt-4 text-center hidden font-bold text-emerald-700 italic animate-pulse">
+                        Sabar ya, sedang mengirim pesan...
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-emerald-900 text-white py-16 px-6">
+        <div class="max-w-7xl mx-auto text-center">
+            <img src="bisa.png" alt="Logo" dclass="h-14 w-auto mx-auto mb-4 brightness-0 invert">
+            <p class="text-emerald-300 text-xs tracking-widest uppercase mb-8">Bisa Belajar, Bisa Berprestasi</p>
+            <div class="flex justify-center space-x-6 mb-10">
+                <a href="#" class="text-2xl hover:text-emerald-400 transition"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="text-2xl hover:text-emerald-400 transition"><i class="fab fa-facebook"></i></a>
+                <a href="https://wa.me/6285220694826" class="text-2xl hover:text-emerald-400 transition"><i class="fab fa-whatsapp"></i></a>
+            </div>
+            <p class="text-emerald-500 text-[10px] tracking-tighter uppercase">&copy; 2026 Bimbel Bisa Education Tasikmalaya. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        function toggleMenu() {
+            document.getElementById('mobile-menu').classList.toggle('translate-x-full');
+        }
+
+        // Script untuk Kirim Formulir ke GAS
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxmq770CGPaM7YEpa-TJgfm3aq8R8PtskCtc1IPS10Gf4jGh4-GZ_pLEmf5svLj9NdD/exec';
+        const form = document.getElementById('contactForm');
+        const btn = document.getElementById('btnKirim');
+        const status = document.getElementById('statusPesan');
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            btn.disabled = true;
+            btn.innerText = 'Sedang Mengirim...';
+            status.classList.remove('hidden');
+
+            fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+                .then(response => {
+                    alert('Terima kasih! Pesan sudah masuk ke email Bisa Education.');
+                    btn.disabled = false;
+                    btn.innerText = 'Kirim Pesan ke Gmail';
+                    status.classList.add('hidden');
+                    form.reset();
+                })
+                .catch(error => {
+                    alert('Aduh maaf, ada gangguan koneksi. Coba lagi ya!');
+                    btn.disabled = false;
+                    btn.innerText = 'Kirim Pesan ke Gmail';
+                    status.classList.add('hidden');
+                });
+        });
+    </script>
+</body>
+</html>

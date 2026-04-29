@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kegiatan - Bisa Education</title>
+<meta name="description" content="Profil tutor profesional di Bisa Education Tasikmalaya.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://bisaeducation.static2.website/">
+<meta property="og:title" content="Bisa Education - Bimbel Asik di Tasikmalaya">
+<meta property="og:description" content="Dokumentasi kegiatan dan profil tutor profesional di Bisa Education.">
+<meta property="og:image" content="https://iili.io/BiNUvSa.png">
+
+<link rel="icon" type="image/png" href="https://iili.io/BiNUvSa.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Poppins', sans-serif; }
+        .glass-nav { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        .loader { border-top-color: #065f46; animation: spinner 1.5s linear infinite; }
+        @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        /* Menghilangkan scrollbar tapi tetap bisa di-scroll */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <nav class="fixed top-0 w-full z-50 glass-nav border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="index.html" class="flex items-center space-x-3">
+                    <img src="bisa.png" alt="Logo" class="h-12 w-auto object-contain">
+                    <div class="flex flex-col leading-tight border-l-2 border-gray-200 pl-3">
+                        <span class="text-lg font-extrabold text-emerald-900 tracking-tight leading-none uppercase">BISA</span>
+                        <span class="text-[10px] font-bold text-emerald-600 tracking-[0.15em] leading-none uppercase">Education</span>
+                    </div>
+                </a>
+                <div class="hidden md:flex space-x-7 font-semibold text-gray-600 text-sm">
+                    <a href="index.html" class="hover:text-emerald-700 transition">Beranda</a>
+                   <a href="berita.html" class="nav-link transition">Berita</a>
+                    <a href="pengurus.html" class="nav-link transition">Pengurus</a>
+                    <a href="kegiatan.html" class="nav-link transition">Kegiatan</a>
+                    <a href="tutor.html" class="nav-link transition">Profil Tutor</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="pt-32 pb-20 bg-emerald-900 text-white text-center relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <h1 class="text-4xl md:text-5xl font-extrabold uppercase tracking-tight">Kegiatan Kami</h1>
+            <p class="mt-4 text-emerald-100 max-w-2xl mx-auto opacity-90 text-lg">Dokumentasi aktivitas belajar mengajar dan keseruan di Bisa Education.</p>
+        </div>
+    </header>
+
+    <div id="loading" class="py-20 flex flex-col items-center">
+        <div class="loader w-12 h-12 border-4 border-emerald-200 rounded-full mb-4"></div>
+        <p class="text-gray-500 animate-pulse">Mengambil data...</p>
+    </div>
+
+    <section class="max-w-7xl mx-auto py-16 px-6">
+        <div id="daftar-kegiatan" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            </div>
+    </section>
+
+    <footer class="py-12 border-t border-gray-100 text-center">
+        <p class="text-gray-400 text-[10px] tracking-widest uppercase">&copy; 2026 Bimbel Bisa Education Tasikmalaya</p>
+    </footer>
+
+   <script>
+    const webAppUrl = 'https://script.google.com/macros/s/AKfycbwhO3xtnBk4Xy130qvPpBX7xfJfM76OwrDvtBNnzF-ZXTBxBHCjWJQrs_2bAEr8i_uU9g/exec';
+
+    async function ambilData() {
+        try {
+            const response = await fetch(webAppUrl);
+            const data = await response.json();
+            const container = document.getElementById('daftar-kegiatan');
+            const loading = document.getElementById('loading');
+
+            loading.style.display = 'none';
+
+            if (data.length === 0) {
+                container.innerHTML = '<p class="col-span-full text-center text-gray-400 italic">Belum ada data di Google Sheets.</p>';
+                return;
+            }
+
+           // Ganti bagian data.forEach di dalam script abang dengan ini:
+data.forEach((item, index) => {
+    // 1. Fungsi Pembersihan Link yang Lebih Kuat
+    const daftarFoto = item.foto.toString().split(',').map(link => {
+        let url = link.trim();
+        
+        // Logika A: Jika link masih format Drive asli
+        if (url.includes('drive.google.com')) {
+            const fileId = url.split('/d/')[1]?.split('/')[0] || url.split('id=')[1];
+            return `https://lh3.googleusercontent.com/d/${fileId}`;
+        }
+        
+        // Logika B: Jika link sudah format lh3 (seperti di gambar abang) tapi mungkin terpotong
+        if (url.includes('googleusercontent.com/d/')) {
+            // Kita pastikan formatnya bersih tanpa tambahan parameter di belakang
+            return url; 
+        }
+        
+        return url;
+    });
+
+    let htmlSlider = '';
+    daftarFoto.forEach(url => {
+        htmlSlider += `
+            <div class="min-w-full h-64 bg-gray-200 flex-shrink-0">
+                <img src="${url}" 
+                     onerror="this.src='https://placehold.co/600x400?text=Cek+Izin+Drive'"
+                     class="w-full h-full object-cover" 
+                     loading="lazy">
+            </div>
+        `;
+    });
+
+    // ... sisa kode cardId dan container.innerHTML abang tetap sama ...
+
+                const cardId = `slider-${index}`;
+                const card = `
+                    <div class="bg-white rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-100 group">
+                        <div class="relative overflow-hidden">
+                            <div id="${cardId}" class="flex overflow-x-auto snap-x snap-mandatory no-scrollbar scroll-smooth">
+                                ${htmlSlider}
+                            </div>
+                            
+                            <span class="absolute top-4 right-4 bg-emerald-800/90 backdrop-blur text-white text-[10px] font-bold px-3 py-1 rounded-lg uppercase z-10 shadow-md">
+                                ${item.kategori}
+                            </span>
+
+                            ${daftarFoto.length > 1 ? `
+                            <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-1 z-10">
+                                ${daftarFoto.map(() => `<div class="w-1.5 h-1.5 bg-white/60 rounded-full"></div>`).join('')}
+                            </div>
+                            ` : ''}
+                        </div>
+
+                        <div class="p-8">
+                            <h3 class="text-xl font-bold text-emerald-900 mb-2">${item.judul}</h3>
+                            <p class="text-gray-500 text-sm leading-relaxed mb-6 line-clamp-3">${item.deskripsi}</p>
+                            <div class="pt-6 border-t border-gray-50 flex justify-between items-center text-emerald-700 text-[10px] font-bold uppercase tracking-wider">
+                                <span><i class="fa fa-calendar-alt mr-1"></i> ${item.tanggal || '-'}</span>
+                                ${daftarFoto.length > 1 ? '<span class="text-emerald-500 animate-pulse">Auto-sliding <i class="fa fa-sync-alt ml-1"></i></span>' : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += card;
+
+                if (daftarFoto.length > 1) {
+                    let currentPos = 0;
+                    const sliderElem = document.getElementById(cardId);
+                    
+                    setInterval(() => {
+                        currentPos++;
+                        if (currentPos >= daftarFoto.length) {
+                            currentPos = 0;
+                        }
+                        const scrollAmount = sliderElem.clientWidth * currentPos;
+                        sliderElem.scrollTo({
+                            left: scrollAmount,
+                            behavior: 'smooth'
+                        });
+                    }, 3000); 
+                }
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            document.getElementById('loading').innerHTML = '<p class="text-red-500">Gagal memuat data.</p>';
+        }
+    }
+
+    ambilData();
+</script>
+
+</body>
+</html>

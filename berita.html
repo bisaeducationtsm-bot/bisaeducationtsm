@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Berita & Artikel - Bisa Education</title>
+    
+    <link rel="icon" type="image/png" href="https://iili.io/BiNUvSa.png">
+    <link rel="apple-touch-icon" href="https://iili.io/BiNUvSa.png">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    </head>
+<body class="bg-gray-50">
+
+    <nav class="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 h-20 flex justify-between items-center">
+            <a href="index.html" class="flex items-center space-x-3">
+                <img src="https://iili.io/BiNUvSa.png" alt="Logo" class="h-12 w-auto">
+                <div class="flex flex-col leading-tight border-l-2 border-gray-200 pl-3">
+                    <span class="text-lg font-extrabold text-emerald-900 uppercase">BISA</span>
+                    <span class="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">Education</span>
+                </div>
+            </a>
+            <div class="hidden md:flex space-x-7 font-semibold text-gray-600 text-sm">
+                <a href="index.html" class="hover:text-emerald-700 transition">Beranda</a>
+                <a href="kegiatan.html" class="hover:text-emerald-700 transition">Kegiatan</a>
+                <a href="tutor.html" class="hover:text-emerald-700 transition">Tutor</a>
+                <a href="pengurus.html" class="hover:text-emerald-700 transition">Pengurus</a>
+                <a href="berita.html" class="text-emerald-700 font-bold border-b-2 border-emerald-700">Berita</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="pt-32 pb-20 bg-emerald-900 text-white text-center">
+        <h1 class="text-4xl font-extrabold uppercase tracking-tight">Kabar Bisa Education</h1>
+        <p class="mt-4 text-emerald-100 opacity-80">Update terbaru seputar kegiatan dan prestasi kami.</p>
+    </header>
+
+    <section class="max-w-7xl mx-auto py-16 px-6">
+        <div id="daftar-berita" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            <p class="col-span-full text-center text-gray-400">Memuat berita terbaru...</p>
+        </div>
+    </section>
+
+    <div id="news-modal" class="fixed inset-0 bg-black/60 z-[100] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto relative">
+            <button onclick="closeModal()" class="absolute top-4 right-4 bg-white/80 rounded-full p-2 shadow-md hover:bg-red-500 hover:text-white transition">✕</button>
+            <div id="modal-content"></div>
+        </div>
+    </div>
+<script>
+    // MASUKKAN LINK GAS BARU KHUSUS BERITA DI SINI
+    const webAppUrlBerita = 'https://script.google.com/macros/s/AKfycbzeKmbFFeeoyXXt98cYSlV3l5ggjhiCCcG_ly94o-NUVvPiOcOMBbbDM4h139kkAWg/exec';
+
+    async function ambilBerita() {
+        try {
+            const response = await fetch(webAppUrlBerita);
+            const data = await response.json();
+            const container = document.getElementById('daftar-berita');
+            container.innerHTML = '';
+
+data.forEach((item, index) => {
+    // 1. Perbaikan Tampilan Tanggal
+    let tglRaw = item.tanggal;
+    let tglTampil = tglRaw;
+    if (tglRaw instanceof Date || !isNaN(Date.parse(tglRaw))) {
+        const d = new Date(tglRaw);
+        const opsi = { day: 'numeric', month: 'long', year: 'numeric' };
+        tglTampil = d.toLocaleDateString('id-ID', opsi);
+    }
+
+    // 2. Logika Foto (Tetap pakai 'poto')
+    let urlPoto = (item.poto || '').trim();
+    let fotoFinal = '';
+
+    if (urlPoto.includes('drive.google.com')) {
+        const fileId = urlPoto.match(/[-\w]{25,}/);
+        if (fileId) {
+            // Gunakan format thumbnail (paling stabil menembus cache)
+            fotoFinal = `https://lh3.googleusercontent.com/u/0/d/${fileId[0]}`;
+        }
+    } else {
+        fotoFinal = urlPoto;
+    }
+
+    // 3. Render Kartu
+    container.innerHTML += `
+        <div class="bg-white rounded-[2rem] overflow-hidden shadow-sm border border-gray-100 flex flex-col h-full hover:shadow-xl transition-all duration-300">
+            <div class="w-full h-56 bg-gray-100">
+                <img src="${fotoFinal}" 
+                     onerror="this.src='https://ui-avatars.com/api/?name=Berita&background=2D6A4F&color=fff'"
+                     class="w-full h-full object-cover" 
+                     alt="${item.judul}">
+            </div>
+            <div class="p-8 flex flex-col flex-grow">
+                <span class="text-xs font-bold text-emerald-600 uppercase mb-3">${tglTampil}</span>
+                <h3 class="text-xl font-bold text-emerald-900 mb-3">${item.judul || 'Judul Berita'}</h3>
+                <p class="text-gray-500 text-sm mb-6 flex-grow line-clamp-2">${item.ringkasan || ''}</p>
+                <button onclick="bukaIsiBerita('${item.id_docs}', '${item.judul}', '${fotoFinal}')" 
+                        class="bg-emerald-700 text-white px-6 py-2 rounded-full text-sm font-bold hover:bg-emerald-800 transition w-fit">
+                    Baca Selengkapnya
+                </button>
+            </div>
+        </div>
+    `;
+});
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    async function bukaIsiBerita(docId, judul, foto) {
+        const modal = document.getElementById('news-modal');
+        const content = document.getElementById('modal-content');
+        
+        // Tampilkan loading sebentar
+        content.innerHTML = '<div class="p-20 text-center">Sedang mengambil isi berita...</div>';
+        modal.classList.remove('hidden');
+
+        try {
+            const res = await fetch(`${webAppUrlBerita}?docId=${docId}`);
+            const data = await res.json();
+
+            content.innerHTML = `
+                <img src="${foto}" class="w-full h-64 object-cover">
+                <div class="p-8">
+                    <h2 class="text-2xl font-bold text-emerald-900 mb-4">${judul}</h2>
+                    <div class="text-gray-700 leading-relaxed space-y-4">
+                        ${data.content || 'Isi berita tidak ditemukan.'}
+                    </div>
+                </div>
+            `;
+        } catch (err) {
+            content.innerHTML = '<div class="p-20 text-center text-red-500">Gagal memuat isi berita.</div>';
+        }
+    }
+
+    function closeModal() {
+        document.getElementById('news-modal').classList.add('hidden');
+    }
+
+    ambilBerita();
+</script>
+</body>
+</html>

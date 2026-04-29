@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Tutor - Bisa Education</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Poppins', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <nav class="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 h-20 flex justify-between items-center">
+            <a href="index.html" class="flex items-center space-x-3">
+                <img src="bisa.png" alt="Logo" class="h-12 w-auto">
+                <div class="flex flex-col leading-tight border-l-2 border-gray-200 pl-3">
+                    <span class="text-lg font-extrabold text-emerald-900 uppercase">BISA</span>
+                    <span class="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">Education</span>
+                </div>
+            </a>
+            <div class="hidden md:flex space-x-7 font-semibold text-gray-600 text-sm">
+                <a href="index.html" class="hover:text-emerald-700 transition">Beranda</a>
+                <a href="berita.html" class="nav-link transition">Berita</a>
+                    <a href="pengurus.html" class="nav-link transition">Pengurus</a>
+                    <a href="kegiatan.html" class="nav-link transition">Kegiatan</a>
+                    <a href="tutor.html" class="nav-link transition">Profil Tutor</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="pt-32 pb-20 bg-emerald-900 text-white text-center">
+        <h1 class="text-4xl font-extrabold uppercase tracking-tight">Tutor Profesional</h1>
+        <p class="mt-4 text-emerald-100 opacity-80">Mengenal lebih dekat para pengajar hebat di Bisa Education.</p>
+    </header><br>
+<div class="max-w-md mx-auto mb-8 px-4">
+    <div class="relative">
+        <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+            <i class="fas fa-search text-gray-400"></i>
+        </span>
+        <input type="text" 
+               id="searchInput" 
+               onkeyup="searchTutor()" 
+               placeholder="Cari nama tutor atau keahlian (misal: Matematika)..." 
+               class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 shadow-sm transition-all">
+    </div>
+</div>
+</br>
+    <section class="max-w-7xl mx-auto py-16 px-6">
+        <div id="daftar-tutor" class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+            <p class="col-span-full text-gray-400">Sedang memuat data tutor...</p>
+        </div>
+    </section>
+
+   <script>
+    // Link Web App yang baru Anda berikan
+    const webAppUrl = 'https://script.google.com/macros/s/AKfycbwje-mLr81VnhA_5MHd2gjp4GHFtixMLHGvm5ygCtsoCNkToV5W6BOI6tMZhpeU3dh1/exec';
+
+    async function ambilTutor() {
+        try {
+            const response = await fetch(webAppUrl);
+            const data = await response.json();
+            const container = document.getElementById('daftar-tutor');
+            
+            container.innerHTML = ''; // Hapus pesan loading
+
+            if (data.length === 0) {
+                container.innerHTML = '<p class="col-span-full text-center text-gray-500 italic">Belum ada data tutor di Spreadsheet.</p>';
+                return;
+            }
+
+            data.forEach(tutor => {
+                // Logika otomatis mengubah link Google Drive menjadi link gambar langsung
+                let urlFoto = tutor.foto || '';
+                if (urlFoto.includes('drive.google.com')) {
+                    const fileId = urlFoto.split('/d/')[1]?.split('/')[0] || urlFoto.split('id=')[1];
+                    urlFoto = `https://lh3.googleusercontent.com/d/${fileId}`;
+                }
+
+                container.innerHTML += `
+                    <div class="bg-white p-8 rounded-[3rem] shadow-sm border border-gray-50 hover:shadow-xl transition-all duration-500 group text-center">
+                        <div class="w-40 h-40 mx-auto mb-6 rounded-full overflow-hidden border-4 border-emerald-50 shadow-inner bg-gray-100">
+                            <img src="${urlFoto}" 
+                                 onerror="this.src='https://ui-avatars.com/api/?name=${tutor.nama}&background=random'"
+                                 class="w-full h-full object-cover group-hover:scale-110 transition duration-500" 
+                                 alt="${tutor.nama}">
+                        </div>
+                        <h3 class="text-xl font-bold text-emerald-900">${tutor.nama || 'Nama Tutor'}</h3>
+                        <p class="text-emerald-600 font-semibold text-sm mb-4 uppercase tracking-wider">${tutor.jabatan || '-'}</p>
+                        <div class="bg-emerald-50 rounded-2xl py-3 px-4 border border-emerald-100">
+                            <p class="text-[10px] text-emerald-800 uppercase font-black tracking-widest mb-1">Bidang Keahlian</p>
+                            <p class="text-gray-600 text-xs leading-relaxed">${tutor.keahlian || '-'}</p>
+                        </div>
+                    </div>
+                `;
+            });
+        } catch (error) {
+            console.error('Gagal mengambil data:', error);
+            document.getElementById('daftar-tutor').innerHTML = '<p class="col-span-full text-center text-red-500">Gagal memuat data. Periksa koneksi atau link GAS.</p>';
+        }
+    }
+
+    // Jalankan fungsi saat halaman dimuat
+    ambilTutor();
+</script>
+</body>
+</html>

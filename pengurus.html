@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Struktur Pengurus - Bisa Education</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Poppins', sans-serif; }
+        
+        .loader {
+            border-top-color: #065f46;
+            animation: spinner 1.5s linear infinite;
+        }
+        @keyframes spinner {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <nav class="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 h-20 flex justify-between items-center">
+            <a href="index.html" class="flex items-center space-x-3">
+                <img src="https://iili.io/BiNUvSa.png" alt="Logo" class="h-12 w-auto">
+                <div class="flex flex-col leading-tight border-l-2 border-gray-200 pl-3">
+                    <span class="text-lg font-extrabold text-emerald-900 uppercase">BISA</span>
+                    <span class="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">Education</span>
+                </div>
+            </a>
+            <div class="hidden md:flex space-x-7 font-semibold text-gray-600 text-sm">
+                <a href="index.html" class="hover:text-emerald-700 transition">Beranda</a>
+                <a href="berita.html" class="nav-link transition">Berita</a>
+                    <a href="pengurus.html" class="nav-link transition">Pengurus</a>
+                    <a href="kegiatan.html" class="nav-link transition">Kegiatan</a>
+                    <a href="tutor.html" class="nav-link transition">Profil Tutor</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="pt-32 pb-20 bg-emerald-900 text-white text-center">
+        <h1 class="text-4xl font-extrabold uppercase tracking-tight">Struktur Pengurus</h1>
+        <p class="mt-4 text-emerald-100 opacity-80">Mengenal tim di balik layar Bisa Education.</p>
+    </header>
+
+    <section class="max-w-7xl mx-auto py-16 px-6">
+        <div id="daftar-pengurus" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8 text-center">
+            <div class="col-span-full flex flex-col items-center justify-center py-20">
+                <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"></div>
+                <p class="text-gray-500">Sedang memuat data pengurus...</p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+    const webAppUrl = 'https://script.google.com/macros/s/AKfycbxhbgfwK-tnWy4UEGEokbn7CoEuPW9FOc6MvpOye-pbZFFqp7rtMjPuVODcZOMRem2N8g/exec';
+
+    // Fungsi helper untuk mendapatkan ID dari link Drive
+    function extractDriveId(url) {
+        if (!url) return null;
+        const patterns = [
+            /\/d\/([a-zA-Z0-9_-]+)/,
+            /id=([a-zA-Z0-9_-]+)/,
+            /file\/d\/([a-zA-Z0-9_-]+)/
+        ];
+        for (let pattern of patterns) {
+            const match = url.match(pattern);
+            if (match && match[1]) return match[1];
+        }
+        return null;
+    }
+
+    async function ambilPengurus() {
+        const container = document.getElementById('daftar-pengurus');
+        
+        try {
+            const response = await fetch(webAppUrl);
+            const data = await response.json();
+            
+            container.innerHTML = ''; 
+
+            if (!data || data.length === 0) {
+                container.innerHTML = '<p class="col-span-full text-center text-gray-500 italic font-medium">Belum ada data pengurus di Spreadsheet.</p>';
+                return;
+            }
+
+            data.forEach(item => {
+                let urlFotoRaw = (item.foto || '').trim();
+                let finalUrl = '';
+                
+                // Cek apakah ini link Drive
+                const driveId = extractDriveId(urlFotoRaw);
+
+                if (driveId) {
+                    // Gunakan format UC (User Content) yang biasanya lebih kompatibel untuk bypass hotlink protection
+                    finalUrl = `https://lh3.googleusercontent.com/u/0/d/${driveId}`;
+                    
+                    // Jika cara di atas masih gagal, browser akan otomatis pindah ke placeholder via 'onerror'
+                } else if (urlFotoRaw !== '') {
+                    finalUrl = urlFotoRaw;
+                }
+
+                const placeholder = `https://ui-avatars.com/api/?name=${encodeURIComponent(item.nama || 'P')}&background=2D6A4F&color=fff&size=256&bold=true`;
+
+                const card = `
+                    <div class="bg-white p-6 rounded-[2.5rem] shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-500 group flex flex-col items-center">
+                        <div class="w-44 h-44 mb-6 rounded-full overflow-hidden border-4 border-emerald-50 shadow-md bg-gray-50 flex items-center justify-center">
+                            <img src="${finalUrl || placeholder}" 
+                                 onerror="this.src='${placeholder}'; console.warn('Gagal memuat foto untuk: ${item.nama}')"
+                                 class="w-full h-full object-cover group-hover:scale-110 transition duration-700" 
+                                 alt="${item.nama}">
+                        </div>
+                        <h3 class="text-xl font-bold text-emerald-900 leading-tight">${item.nama || 'Nama Pengurus'}</h3>
+                        <p class="text-emerald-600 font-bold text-[10px] mt-2 mb-4 uppercase tracking-[0.2em] bg-emerald-50 px-4 py-1 rounded-full border border-emerald-100">
+                            ${item.jabatan || 'Anggota'}
+                        </p>
+                    </div>
+                `;
+                container.innerHTML += card;
+            });
+
+        } catch (error) {
+            console.error('Gagal mengambil data:', error);
+            container.innerHTML = `
+                <div class="col-span-full text-center py-10">
+                    <div class="inline-block p-4 bg-red-50 rounded-2xl border border-red-100">
+                        <p class="text-red-600 font-semibold">Gagal memuat data dari Spreadsheet.</p>
+                        <p class="text-gray-500 text-xs mt-2">Pastikan URL Web App Script benar dan status Spreadsheet sudah Publik.</p>
+                    </div>
+                </div>
+            `;
+        }
+    }
+
+    window.onload = ambilPengurus;
+</script>
+</body>
+</html>
