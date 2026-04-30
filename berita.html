@@ -9,7 +9,9 @@
     <link rel="apple-touch-icon" href="https://iili.io/BiNUvSa.png">
     
     <script src="https://cdn.tailwindcss.com"></script>
-    </head>
+    <!-- Tambahan FontAwesome untuk ikon hamburger dan menu -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
 <body class="bg-gray-50">
 
     <nav class="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-gray-100">
@@ -21,6 +23,8 @@
                     <span class="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">Education</span>
                 </div>
             </a>
+            
+            <!-- Menu Desktop tetap seperti semula -->
             <div class="hidden md:flex space-x-7 font-semibold text-gray-600 text-sm">
                 <a href="index.html" class="hover:text-emerald-700 transition">Beranda</a>
                 <a href="kegiatan.html" class="hover:text-emerald-700 transition">Kegiatan</a>
@@ -28,8 +32,52 @@
                 <a href="pengurus.html" class="hover:text-emerald-700 transition">Pengurus</a>
                 <a href="berita.html" class="text-emerald-700 font-bold border-b-2 border-emerald-700">Berita</a>
             </div>
+
+            <!-- Tambahan: Tombol Hamburger untuk versi Mobile -->
+            <div class="md:hidden">
+                <button onclick="toggleMenu()" class="p-2 text-emerald-900 focus:outline-none">
+                    <i class="fa fa-bars text-2xl"></i>
+                </button>
+            </div>
         </div>
     </nav>
+
+    <!-- Tambahan: Menu Drawer Mobile sesuai gambar -->
+    <div id="mobile-menu" class="fixed inset-0 bg-white z-[60] transform translate-x-full transition-transform duration-300 md:hidden p-6 shadow-2xl">
+        <div class="flex justify-between items-center mb-8">
+            <div class="flex items-center space-x-2">
+                <img src="https://iili.io/BiNUvSa.png" alt="Logo" class="h-8 w-auto">
+                <span class="text-xl font-bold text-emerald-900 uppercase">BISA EDUCATION</span>
+            </div>
+            <button onclick="toggleMenu()" class="text-4xl text-gray-300">&times;</button>
+        </div>
+        
+        <div class="flex flex-col space-y-4">
+            <a href="index.html" class="text-emerald-800 font-bold text-lg py-2">Beranda</a>
+            <a href="index.html#program" class="text-gray-700 font-semibold text-lg py-2" onclick="toggleMenu()">Program Belajar</a>
+            
+            <div class="flex flex-col space-y-4 pt-4 border-t border-gray-100">
+                <a href="kegiatan.html" class="flex items-center space-x-4 text-gray-700 font-medium">
+                    <i class="fas fa-calendar-alt text-emerald-600 w-6"></i> <span>Kegiatan</span>
+                </a>
+                <a href="berita.html" class="flex items-center space-x-4 text-emerald-700 font-bold">
+                    <i class="fas fa-book-open text-emerald-600 w-6"></i> <span>Berita Kegiatan</span>
+                </a>
+                <a href="tutor.html" class="flex items-center space-x-4 text-gray-700 font-medium">
+                    <i class="fas fa-user-graduate text-emerald-600 w-6"></i> <span>Profil Tutor</span>
+                </a>
+                <a href="pengurus.html" class="flex items-center space-x-4 text-gray-700 font-medium">
+                    <i class="fas fa-user-tie text-emerald-600 w-6"></i> <span>Profil Pengurus</span>
+                </a>
+            </div>
+
+            <div class="pt-10">
+                <a href="https://wa.me/6285220694826" target="_blank" class="block w-full bg-[#064e3b] text-white text-center py-4 rounded-xl font-bold shadow-lg">
+                    Hubungi via WhatsApp
+                </a>
+            </div>
+        </div>
+    </div>
 
     <header class="pt-32 pb-20 bg-emerald-900 text-white text-center">
         <h1 class="text-4xl font-extrabold uppercase tracking-tight">Kabar Bisa Education</h1>
@@ -48,8 +96,16 @@
             <div id="modal-content"></div>
         </div>
     </div>
+<footer class="py-12 border-t border-gray-100 text-center">
+        <p class="text-gray-400 text-[10px] tracking-widest uppercase">&copy; 2026 Bimbel Bisa Education Tasikmalaya</p>
+    </footer>
 <script>
-    // MASUKKAN LINK GAS BARU KHUSUS BERITA DI SINI
+    // Fungsi tambahan untuk mengontrol menu mobile
+    function toggleMenu() {
+        const menu = document.getElementById('mobile-menu');
+        menu.classList.toggle('translate-x-full');
+    }
+
     const webAppUrlBerita = 'https://script.google.com/macros/s/AKfycbzeKmbFFeeoyXXt98cYSlV3l5ggjhiCCcG_ly94o-NUVvPiOcOMBbbDM4h139kkAWg/exec';
 
     async function ambilBerita() {
@@ -59,51 +115,47 @@
             const container = document.getElementById('daftar-berita');
             container.innerHTML = '';
 
-data.forEach((item, index) => {
-    // 1. Perbaikan Tampilan Tanggal
-    let tglRaw = item.tanggal;
-    let tglTampil = tglRaw;
-    if (tglRaw instanceof Date || !isNaN(Date.parse(tglRaw))) {
-        const d = new Date(tglRaw);
-        const opsi = { day: 'numeric', month: 'long', year: 'numeric' };
-        tglTampil = d.toLocaleDateString('id-ID', opsi);
-    }
+            data.forEach((item, index) => {
+                let tglRaw = item.tanggal;
+                let tglTampil = tglRaw;
+                if (tglRaw instanceof Date || !isNaN(Date.parse(tglRaw))) {
+                    const d = new Date(tglRaw);
+                    const opsi = { day: 'numeric', month: 'long', year: 'numeric' };
+                    tglTampil = d.toLocaleDateString('id-ID', opsi);
+                }
 
-    // 2. Logika Foto (Tetap pakai 'poto')
-    let urlPoto = (item.poto || '').trim();
-    let fotoFinal = '';
+                let urlPoto = (item.poto || '').trim();
+                let fotoFinal = '';
 
-    if (urlPoto.includes('drive.google.com')) {
-        const fileId = urlPoto.match(/[-\w]{25,}/);
-        if (fileId) {
-            // Gunakan format thumbnail (paling stabil menembus cache)
-            fotoFinal = `https://lh3.googleusercontent.com/u/0/d/${fileId[0]}`;
-        }
-    } else {
-        fotoFinal = urlPoto;
-    }
+                if (urlPoto.includes('drive.google.com')) {
+                    const fileId = urlPoto.match(/[-\w]{25,}/);
+                    if (fileId) {
+                        fotoFinal = `https://lh3.googleusercontent.com/u/0/d/${fileId[0]}`;
+                    }
+                } else {
+                    fotoFinal = urlPoto;
+                }
 
-    // 3. Render Kartu
-    container.innerHTML += `
-        <div class="bg-white rounded-[2rem] overflow-hidden shadow-sm border border-gray-100 flex flex-col h-full hover:shadow-xl transition-all duration-300">
-            <div class="w-full h-56 bg-gray-100">
-                <img src="${fotoFinal}" 
-                     onerror="this.src='https://ui-avatars.com/api/?name=Berita&background=2D6A4F&color=fff'"
-                     class="w-full h-full object-cover" 
-                     alt="${item.judul}">
-            </div>
-            <div class="p-8 flex flex-col flex-grow">
-                <span class="text-xs font-bold text-emerald-600 uppercase mb-3">${tglTampil}</span>
-                <h3 class="text-xl font-bold text-emerald-900 mb-3">${item.judul || 'Judul Berita'}</h3>
-                <p class="text-gray-500 text-sm mb-6 flex-grow line-clamp-2">${item.ringkasan || ''}</p>
-                <button onclick="bukaIsiBerita('${item.id_docs}', '${item.judul}', '${fotoFinal}')" 
-                        class="bg-emerald-700 text-white px-6 py-2 rounded-full text-sm font-bold hover:bg-emerald-800 transition w-fit">
-                    Baca Selengkapnya
-                </button>
-            </div>
-        </div>
-    `;
-});
+                container.innerHTML += `
+                    <div class="bg-white rounded-[2rem] overflow-hidden shadow-sm border border-gray-100 flex flex-col h-full hover:shadow-xl transition-all duration-300">
+                        <div class="w-full h-56 bg-gray-100">
+                            <img src="${fotoFinal}" 
+                                 onerror="this.src='https://ui-avatars.com/api/?name=Berita&background=2D6A4F&color=fff'"
+                                 class="w-full h-full object-cover" 
+                                 alt="${item.judul}">
+                        </div>
+                        <div class="p-8 flex flex-col flex-grow">
+                            <span class="text-xs font-bold text-emerald-600 uppercase mb-3">${tglTampil}</span>
+                            <h3 class="text-xl font-bold text-emerald-900 mb-3">${item.judul || 'Judul Berita'}</h3>
+                            <p class="text-gray-500 text-sm mb-6 flex-grow line-clamp-2">${item.ringkasan || ''}</p>
+                            <button onclick="bukaIsiBerita('${item.id_docs}', '${item.judul}', '${fotoFinal}')" 
+                                    class="bg-emerald-700 text-white px-6 py-2 rounded-full text-sm font-bold hover:bg-emerald-800 transition w-fit">
+                                Baca Selengkapnya
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
         } catch (error) {
             console.error('Error:', error);
         }
@@ -112,8 +164,6 @@ data.forEach((item, index) => {
     async function bukaIsiBerita(docId, judul, foto) {
         const modal = document.getElementById('news-modal');
         const content = document.getElementById('modal-content');
-        
-        // Tampilkan loading sebentar
         content.innerHTML = '<div class="p-20 text-center">Sedang mengambil isi berita...</div>';
         modal.classList.remove('hidden');
 
