@@ -9,10 +9,23 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+	@keyframes scrollTesti {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-testi {
+            display: flex;
+            width: max-content;
+            animation: scrollTesti 30s linear infinite;
+        }
+        .animate-testi:hover { 
+            animation-play-state: paused; 
+        }
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Poppins', sans-serif; scroll-behavior: smooth; }
         .glass-nav { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
         .nav-link:hover { color: #059669; }
+		
     </style>
 </head>
 <body class="bg-white text-gray-800">
@@ -121,7 +134,22 @@
                 </div>
             </div>
         </section>
+</section> <!-- Ini akhir section kontak -->
 
+    <!-- TEMPEL DI SINI (SEBELUM FOOTER) -->
+    <section class="py-16 md:py-24 bg-white overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6 text-center mb-12">
+            <h2 class="text-2xl md:text-3xl font-bold text-emerald-900 uppercase">Kata Mereka Tentang BISA</h2>
+            <div class="w-16 h-1 bg-emerald-500 mx-auto mt-3 rounded-full"></div>
+        </div>
+        <div class="relative w-full overflow-hidden">
+            <div id="slider-testimoni" class="animate-testi">
+                <p class="text-gray-400 p-10 w-full text-center">Menghubungkan ke database...</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-[#064e3b] ..."> <!-- Ini awal footer Abang -->
         <section id="kontak" class="py-16 md:py-24 px-4 bg-emerald-50">
             <div class="max-w-xl mx-auto text-center">
                 <h2 class="text-2xl md:text-4xl font-extrabold text-emerald-900 mb-4 uppercase leading-tight">Konsultasi Gratis Sekarang</h2>
@@ -172,7 +200,7 @@
             <!-- Garis Tipis & Copyright Sederhana -->
             <div class="w-full max-w-xs border-t border-emerald-700 pt-6">
                 <p class="text-[9px] md:text-[10px] text-emerald-500/60 uppercase tracking-[0.3em]">
-                    &copy; 2026 BIMBEL BISA EDUCATION
+                    &copy; 2026 Bimbel Bisa Education
                 </p>
             </div>
 
@@ -183,6 +211,69 @@
         function toggleMenu() {
             document.getElementById('mobile-menu').classList.toggle('translate-x-full');
         }
+		function toggleMenu() {
+        document.getElementById('mobile-menu').classList.toggle('translate-x-full');
+    }
+    // --- TEMPEL DI SINI ---
+    const urlTestimoni = 'https://script.google.com/macros/s/AKfycbxAc_pa17LOyi8mgRq9evxdAYudBMLMNaDMeVd4IcIDYrXc8FUYNh76DgcrCtJe-0Mh/exec';
+
+    // Fungsi Ajaib untuk Link Google Drive
+    function extractDriveId(url) {
+        if (!url) return null;
+        const patterns = [/\/d\/([a-zA-Z0-9_-]+)/, /id=([a-zA-Z0-9_-]+)/, /file\/d\/([a-zA-Z0-9_-]+)/];
+        for (let pattern of patterns) {
+            const match = url.match(pattern);
+            if (match && match[1]) return match[1];
+        }
+        return null;
+    }
+
+    async function loadTestimoni() {
+        const container = document.getElementById('slider-testimoni');
+        try {
+            const response = await fetch(urlTestimoni);
+            const data = await response.json();
+            
+            if (data.length === 0) {
+                container.innerHTML = '<p class="text-gray-400">Belum ada testimoni.</p>';
+                return;
+            }
+
+            // Aturan Double Data: Hanya duplikat jika data lebih dari 3 supaya loop halus.
+            // Kalau cuma 2, kita tampilkan aslinya saja dulu.
+            const displayData = data.length > 3 ? [...data, ...data] : data;
+            
+            container.innerHTML = displayData.map(item => {
+        const driveId = extractDriveId(item.foto);
+        const finalUrl = driveId ? `https://lh3.googleusercontent.com/u/0/d/${driveId}` : item.foto;
+        const placeholder = `https://ui-avatars.com/api/?name=${encodeURIComponent(item.nama)}&background=fbbf24&color=fff`;
+
+        return `
+            <div class="flex-shrink-0 w-[280px] md:w-[350px] mx-3 p-6 md:p-8 rounded-[2rem] border border-emerald-100 shadow-sm relative overflow-hidden" 
+                 style="background-image: url('https://static.vecteezy.com/system/resources/thumbnails/002/058/253/small/abstract-polygonal-white-background-free-vector.jpg'); background-size: cover; background-position: center;">
+                
+                <!-- Overlay tipis agar konten tetap kontras -->
+                <div class="absolute inset-0 bg-white/40"></div>
+
+                <div class="flex flex-col items-center text-center relative z-10">
+                    <div class="w-20 h-20 bg-orange-400 rounded-full mb-4 overflow-hidden border-4 border-white shadow-md flex items-center justify-center">
+                        <img src="${finalUrl || placeholder}" 
+                             onerror="this.src='${placeholder}'"
+                             class="w-full h-full object-cover">
+                    </div>
+                    <span class="text-[10px] font-extrabold text-orange-600 bg-orange-100/80 px-4 py-1 rounded-full uppercase mb-3 tracking-widest">${item.jenjang}</span>
+                    <h4 class="font-bold text-emerald-900 text-lg">${item.nama}</h4>
+                    <p class="text-xs md:text-sm text-gray-600 italic mt-4 leading-relaxed font-medium">"${item.pesan}"</p>
+                </div>
+            </div>
+        `;
+    }).join('');
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    window.addEventListener('DOMContentLoaded', loadTestimoni);
     </script>
 </body>
 </html>
