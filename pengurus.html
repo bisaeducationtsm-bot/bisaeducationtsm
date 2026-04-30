@@ -19,9 +19,11 @@
             100% { transform: rotate(360deg); }
         }
     </style>
+	<link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css)">
 </head>
 <body class="bg-gray-50">
 
+   <!-- NAVBAR (Perbaikan Posisi Hamburger) -->
     <nav class="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-gray-100">
         <div class="max-w-7xl mx-auto px-4 h-20 flex justify-between items-center">
             <a href="index.html" class="flex items-center space-x-3">
@@ -31,16 +33,61 @@
                     <span class="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">Education</span>
                 </div>
             </a>
+
+            <!-- Menu Desktop -->
             <div class="hidden md:flex space-x-7 font-semibold text-gray-600 text-sm">
                 <a href="index.html" class="hover:text-emerald-700 transition">Beranda</a>
                 <a href="berita.html" class="nav-link transition">Berita</a>
-                    <a href="pengurus.html" class="nav-link transition">Pengurus</a>
-                    <a href="kegiatan.html" class="nav-link transition">Kegiatan</a>
-                    <a href="tutor.html" class="nav-link transition">Profil Tutor</a>
+                <a href="pengurus.html" class="nav-link transition font-bold text-emerald-700">Pengurus</a>
+                <a href="kegiatan.html" class="nav-link transition">Kegiatan</a>
+                <a href="tutor.html" class="nav-link transition">Profil Tutor</a>
+            </div>
+
+            <!-- TOMBOL HAMBURGER (Harus di luar div menu desktop agar tidak ikut tersembunyi) -->
+            <div class="md:hidden">
+                <button onclick="toggleMenu()" class="p-2 text-emerald-900 focus:outline-none">
+                    <i class="fa fa-bars text-2xl"></i>
+                </button>
             </div>
         </div>
     </nav>
 
+    <!-- DRAWER MENU MOBILE (Tetap di bawah nav) -->
+    <div id="mobile-menu" class="fixed inset-0 bg-white z-[60] transform translate-x-full transition-transform duration-300 md:hidden p-6 shadow-2xl">
+        <div class="flex justify-between items-center mb-8">
+            <div class="flex items-center space-x-2">
+                <img src="https://iili.io/BiNUvSa.png" alt="Logo" class="h-8 w-auto">
+                <span class="text-xl font-bold text-emerald-900 uppercase">BISA EDUCATION</span>
+            </div>
+            <button onclick="toggleMenu()" class="text-4xl text-gray-300 hover:text-red-500">&times;</button>
+        </div>
+        
+        <div class="flex flex-col space-y-4">
+            <a href="index.html" class="text-emerald-800 font-bold text-lg py-2">Beranda</a>
+            <a href="index.html#program" class="text-gray-700 font-semibold text-lg py-2" onclick="toggleMenu()">Program Belajar</a>
+            
+            <div class="flex flex-col space-y-4 pt-4 border-t border-gray-100">
+                <a href="kegiatan.html" class="flex items-center space-x-4 text-gray-700 font-medium">
+                    <i class="fas fa-calendar-alt text-emerald-600 w-6"></i> <span>Kegiatan</span>
+                </a>
+                <a href="berita.html" class="flex items-center space-x-4 text-gray-700 font-medium">
+                    <i class="fas fa-book-open text-emerald-600 w-6"></i> <span>Berita Kegiatan</span>
+                </a>
+                <a href="tutor.html" class="flex items-center space-x-4 text-gray-700 font-medium">
+                    <i class="fas fa-user-graduate text-emerald-600 w-6"></i> <span>Profil Tutor</span>
+                </a>
+                <a href="pengurus.html" class="flex items-center space-x-4 text-emerald-700 font-bold">
+                    <i class="fas fa-user-tie text-emerald-600 w-6"></i> <span>Profil Pengurus</span>
+                </a>
+            </div>
+
+            <div class="pt-10">
+                <a href="https://wa.me/6285220694826" target="_blank" class="block w-full bg-[#064e3b] text-white text-center py-4 rounded-xl font-bold shadow-lg">
+                    Hubungi via WhatsApp
+                </a>
+            </div>
+        </div>
+    </div>
     <header class="pt-32 pb-20 bg-emerald-900 text-white text-center">
         <h1 class="text-4xl font-extrabold uppercase tracking-tight">Struktur Pengurus</h1>
         <p class="mt-4 text-emerald-100 opacity-80">Mengenal tim di balik layar Bisa Education.</p>
@@ -54,7 +101,9 @@
             </div>
         </div>
     </section>
-
+<footer class="py-12 border-t border-gray-100 text-center">
+        <p class="text-gray-400 text-[10px] tracking-widest uppercase">&copy; 2026 Bimbel Bisa Education Tasikmalaya</p>
+    </footer>
     <script>
     const webAppUrl = 'https://script.google.com/macros/s/AKfycbxhbgfwK-tnWy4UEGEokbn7CoEuPW9FOc6MvpOye-pbZFFqp7rtMjPuVODcZOMRem2N8g/exec';
 
@@ -136,6 +185,12 @@
     }
 
     window.onload = ambilPengurus;
+</script>
+<script>
+    function toggleMenu() {
+        const menu = document.getElementById('mobile-menu');
+        menu.classList.toggle('translate-x-full');
+    }
 </script>
 </body>
 </html>
