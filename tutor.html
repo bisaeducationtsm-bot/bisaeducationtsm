@@ -97,16 +97,25 @@
 </div>
 </br>
     <section class="max-w-7xl mx-auto py-16 px-6">
-        <div id="daftar-tutor" class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+ <div id="daftar-tutor" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-8 px-2 text-center">
             <p class="col-span-full text-gray-400">Sedang memuat data tutor...</p>
         </div>
     </section>
 <footer class="py-12 border-t border-gray-100 text-center">
         <p class="text-gray-400 text-[10px] tracking-widest uppercase">&copy; 2026 Bimbel Bisa Education Tasikmalaya</p>
     </footer>
-   <script>
-    // Link Web App yang baru Anda berikan
+<script>
     const webAppUrl = 'https://script.google.com/macros/s/AKfycbwje-mLr81VnhA_5MHd2gjp4GHFtixMLHGvm5ygCtsoCNkToV5W6BOI6tMZhpeU3dh1/exec';
+
+    // Fungsi Ajaib untuk Ekstrak ID Google Drive yang lebih akurat
+    function getDriveImageUrl(url) {
+        if (!url || !url.includes('drive.google.com')) return url;
+        const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
+        if (match && match[1]) {
+            return `https://lh3.googleusercontent.com/u/0/d/${match[1]}`;
+        }
+        return url;
+    }
 
     async function ambilTutor() {
         try {
@@ -114,45 +123,47 @@
             const data = await response.json();
             const container = document.getElementById('daftar-tutor');
             
-            container.innerHTML = ''; // Hapus pesan loading
+            container.innerHTML = ''; 
 
             if (data.length === 0) {
-                container.innerHTML = '<p class="col-span-full text-center text-gray-500 italic">Belum ada data tutor di Spreadsheet.</p>';
+                container.innerHTML = '<p class="col-span-full text-center text-gray-500 italic">Belum ada data tutor.</p>';
                 return;
             }
 
             data.forEach(tutor => {
-                // Logika otomatis mengubah link Google Drive menjadi link gambar langsung
-                let urlFoto = tutor.foto || '';
-                if (urlFoto.includes('drive.google.com')) {
-                    const fileId = urlFoto.split('/d/')[1]?.split('/')[0] || urlFoto.split('id=')[1];
-                    urlFoto = `https://lh3.googleusercontent.com/d/${fileId}`;
-                }
+                const urlFoto = getDriveImageUrl(tutor.foto);
+                const placeholder = `https://ui-avatars.com/api/?name=${encodeURIComponent(tutor.nama)}&background=a7f3d0&color=064e3b`;
 
                 container.innerHTML += `
-                    <div class="bg-white p-8 rounded-[3rem] shadow-sm border border-gray-50 hover:shadow-xl transition-all duration-500 group text-center">
-                        <div class="w-40 h-40 mx-auto mb-6 rounded-full overflow-hidden border-4 border-emerald-50 shadow-inner bg-gray-100">
-                            <img src="${urlFoto}" 
-                                 onerror="this.src='https://ui-avatars.com/api/?name=${tutor.nama}&background=random'"
-                                 class="w-full h-full object-cover group-hover:scale-110 transition duration-500" 
-                                 alt="${tutor.nama}">
+                    <div class="bg-white p-3 md:p-8 rounded-[2rem] md:rounded-[3rem] shadow-sm border border-gray-50 hover:shadow-xl transition-all duration-500 group text-center flex flex-col justify-between h-full">
+                        <div>
+                            <div class="w-16 h-16 md:w-32 md:h-32 mx-auto mb-3 overflow-hidden rounded-full border-2 md:border-4 border-emerald-50">
+                                <img src="${urlFoto || placeholder}" 
+                                     onerror="this.src='${placeholder}'"
+                                     class="w-full h-full object-cover group-hover:scale-110 transition duration-500" 
+                                     alt="${tutor.nama}">
+                            </div>
+                            <h6 class="text-xs md:text-lg font-bold text-emerald-900 leading-tight">${tutor.nama || 'Nama Tutor'}</h6>
+                            <p class="text-emerald-600 font-semibold text-[9px] md:text-sm mb-2 md:mb-4 uppercase tracking-wider">${tutor.jabatan || '-'}</p>
                         </div>
-                        <h3 class="text-xl font-bold text-emerald-900">${tutor.nama || 'Nama Tutor'}</h3>
-                        <p class="text-emerald-600 font-semibold text-sm mb-4 uppercase tracking-wider">${tutor.jabatan || '-'}</p>
-                        <div class="bg-emerald-50 rounded-2xl py-3 px-4 border border-emerald-100">
-                            <p class="text-[10px] text-emerald-800 uppercase font-black tracking-widest mb-1">Bidang Keahlian</p>
-                            <p class="text-gray-600 text-xs leading-relaxed">${tutor.keahlian || '-'}</p>
+                        <div class="bg-emerald-50 rounded-xl md:rounded-2xl py-2 md:py-3 px-2 md:px-4 border border-emerald-100">
+                            <p class="text-[8px] md:text-[10px] text-emerald-800 uppercase font-black tracking-widest mb-1">Bidang Keahlian</p>
+                            <p class="text-[9px] md:text-xs text-gray-600 leading-tight">${tutor.keahlian || '-'}</p>
                         </div>
                     </div>
                 `;
             });
         } catch (error) {
-            console.error('Gagal mengambil data:', error);
-            document.getElementById('daftar-tutor').innerHTML = '<p class="col-span-full text-center text-red-500">Gagal memuat data. Periksa koneksi atau link GAS.</p>';
+            console.error('Error:', error);
+            document.getElementById('daftar-tutor').innerHTML = '<p class="col-span-full text-center text-red-500">Gagal memuat data.</p>';
         }
     }
 
-    // Jalankan fungsi saat halaman dimuat
+    function toggleMenu() {
+        const menu = document.getElementById('mobile-menu');
+        menu.classList.toggle('translate-x-full');
+    }
+
     ambilTutor();
 </script>
 <script>
