@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Virtual Report</title>
-<link rel="icon" type="image/png" href="https://iili.io/BiNUvSa.png">
-    
+    <title>V-Report</title>
+    <link rel="icon" type="image/png" href="https://iili.io/BiNUvSa.png">
     <!-- Dependencies -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -23,45 +22,32 @@
             background-color: #0f172a;
             color: white;
             overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        /* Glassmorphism Effect */
         .glass-panel {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
         }
 
         .glass-nav {
-            background: rgba(15, 23, 42, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        /* Hide scrollbar but allow scrolling */
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
         }
 
-        /* Custom Scrollbar for Desktop */
-        @media (min-width: 1024px) {
-            ::-webkit-scrollbar { width: 6px; }
-            ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
-            ::-webkit-scrollbar-thumb { background: rgba(16, 185, 129, 0.4); border-radius: 10px; }
-        }
-
-        .animate-fade-up {
-            animation: fadeUp 0.6s ease-out forwards;
-        }
-
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(20px); }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
     </style>
@@ -70,10 +56,9 @@
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect } = React;
+        const { useState } = React;
 
         const App = () => {
-            // KONFIGURASI UTAMA
             const GAS_REPORT_URL = "https://script.google.com/macros/s/AKfycbzV7el82rAqlh1JGV7H-B0FYHUoNuU6M8t3gbR08LxVCH4VFiizCqPGHk_QH-ZVaRkEHg/exec";
             const logoUrl = "https://iili.io/BiNUvSa.png";
             const bgImage = "https://static.wixstatic.com/media/24e8f3_56d693f9b5aa4008ad411fe054389c69~mv2.jpg/v1/fill/w_1200,h_800,al_c,q_85/24e8f3_56d693f9b5aa4008ad411fe054389c69~mv2.jpg";
@@ -91,11 +76,9 @@
                 e.preventDefault();
                 setLoading(true);
                 setError('');
-                
                 try {
                     const response = await fetch(`${GAS_REPORT_URL}?action=loginSiswa&user=${username}&pass=${password}`);
                     const data = await response.json();
-                    
                     if (data.success) {
                         setUser(data.userData);
                         setAcademicData(data.academicData);
@@ -104,7 +87,7 @@
                         setError("NIS atau Kata Sandi salah.");
                     }
                 } catch (err) {
-                    setError("Koneksi gagal. Cek internet Anda.");
+                    setError("Koneksi gagal.");
                 } finally {
                     setLoading(false);
                 }
@@ -112,60 +95,30 @@
 
             const subjects = ["Matematika", "B. Indonesia", "B. Inggris"];
 
-            // TAMPILAN LOGIN
             if (!isLoggedIn) {
                 return (
-                    <div 
-                        className="min-h-screen flex items-center justify-center p-4 bg-cover bg-center bg-no-repeat transition-all duration-1000 relative"
-                        style={{ backgroundImage: `url(${bgImage})` }}
-                    >
-                        <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-[2px]"></div>
-
-                        <div className="max-w-md w-full glass-panel rounded-[2.5rem] shadow-2xl p-8 md:p-10 animate-fade-up relative z-10 border border-white/20">
-                            <div className="text-center mb-8">
-                                <div className="bg-white/95 w-24 h-24 mx-auto mb-5 rounded-[2rem] p-4 shadow-xl border border-white/20">
+                    <div className="min-h-screen flex items-center justify-center p-5 bg-cover bg-center transition-all relative" style={{ backgroundImage: `url(${bgImage})` }}>
+                        <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-[1px]"></div>
+                        <div className="max-w-sm w-full glass-panel rounded-[2rem] shadow-2xl p-7 animate-fade-in relative z-10">
+                            <div className="text-center mb-6">
+                                <div className="bg-white/95 w-16 h-16 mx-auto mb-3 rounded-2xl p-3 shadow-lg">
                                     <img src={logoUrl} className="w-full h-full object-contain" alt="Logo" />
                                 </div>
-                                <h1 className="text-4xl font-black text-white italic uppercase tracking-tighter leading-none">V-REPORT</h1>
-                                <p className="text-[10px] font-bold text-emerald-400 mt-2 uppercase tracking-[0.4em] opacity-80">BISA Education Platform</p>
+                                <h1 className="text-2xl font-black text-white italic uppercase tracking-tighter">V-REPORT</h1>
+                                <p className="text-[8px] font-bold text-emerald-400 mt-1 uppercase tracking-[0.3em] opacity-80">Academy Portal</p>
                             </div>
-
-                            <form onSubmit={handleLogin} className="space-y-4">
-                                {error && (
-                                    <div className="flex items-center gap-3 p-4 bg-red-500/20 text-red-100 rounded-2xl text-[11px] font-bold border border-red-500/30 animate-pulse">
-                                        <i className="fas fa-exclamation-circle text-lg"></i> {error}
-                                    </div>
-                                )}
-                                
-                                <div className="space-y-1.5">
-                                    <label className="text-[10px] font-black text-white/50 uppercase tracking-widest ml-3">ID SISWA (NIS)</label>
-                                    <input 
-                                        type="text" 
-                                        className="w-full p-4 bg-white/5 border border-white/10 rounded-2xl outline-none focus:ring-4 focus:ring-emerald-500/30 font-bold text-white placeholder:text-white/20 transition-all text-sm" 
-                                        placeholder="Ketik NIS" 
-                                        value={username}
-                                        onChange={(e) => setUsername(e.target.value)}
-                                        required 
-                                    />
+                            <form onSubmit={handleLogin} className="space-y-3">
+                                {error && <div className="p-3 bg-red-500/20 text-red-100 rounded-xl text-[10px] font-bold border border-red-500/30 text-center">{error}</div>}
+                                <div className="space-y-1">
+                                    <label className="text-[9px] font-black text-white/50 uppercase tracking-widest ml-2">NIS</label>
+                                    <input type="text" className="w-full p-3 bg-white/5 border border-white/10 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/30 font-bold text-white text-sm" placeholder="Ketik NIS" value={username} onChange={(e) => setUsername(e.target.value)} required />
                                 </div>
-                                
-                                <div className="space-y-1.5">
-                                    <label className="text-[10px] font-black text-white/50 uppercase tracking-widest ml-3">KATA SANDI</label>
-                                    <input 
-                                        type="password" 
-                                        className="w-full p-4 bg-white/5 border border-white/10 rounded-2xl outline-none focus:ring-4 focus:ring-emerald-500/30 font-bold text-white placeholder:text-white/20 transition-all text-sm" 
-                                        placeholder="••••••••" 
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        required 
-                                    />
+                                <div className="space-y-1">
+                                    <label className="text-[9px] font-black text-white/50 uppercase tracking-widest ml-2">KATA SANDI</label>
+                                    <input type="password" className="w-full p-3 bg-white/5 border border-white/10 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/30 font-bold text-white text-sm" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required />
                                 </div>
-
-                                <button 
-                                    disabled={loading}
-                                    className="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-black py-5 rounded-2xl shadow-xl shadow-emerald-500/20 transition-all active:scale-95 flex items-center justify-center gap-3 mt-6 uppercase tracking-widest text-xs"
-                                >
-                                    {loading ? <i className="fas fa-spinner fa-spin text-xl"></i> : "LOGIN DASHBOARD"}
+                                <button disabled={loading} className="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-black py-4 rounded-xl shadow-lg transition-all active:scale-95 text-xs tracking-widest mt-2">
+                                    {loading ? <i className="fas fa-spinner fa-spin"></i> : "MASUK"}
                                 </button>
                             </form>
                         </div>
@@ -173,131 +126,90 @@
                 );
             }
 
-            // TAMPILAN DASHBOARD
             return (
-                <div 
-                    className="min-h-screen bg-fixed bg-cover bg-center transition-all duration-1000 relative no-scrollbar"
-                    style={{ backgroundImage: `url(${bgImage})` }}
-                >
+                <div className="min-h-screen bg-fixed bg-cover bg-center relative no-scrollbar" style={{ backgroundImage: `url(${bgImage})` }}>
                     <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-[1px]"></div>
-
                     <div className="relative z-10">
-                        {/* Glass Header */}
-                        <nav className="glass-nav sticky top-0 z-50 px-6 py-4">
-                            <div className="max-w-4xl mx-auto flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                    <div className="bg-white rounded-xl p-1 shadow-md">
-                                        <img src={logoUrl} className="w-8 h-8 object-contain" alt="Logo" />
+                        <nav className="glass-nav sticky top-0 z-50 px-4 py-3">
+                            <div className="max-w-2xl mx-auto flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                    <div className="bg-white rounded-lg p-1">
+                                        <img src={logoUrl} className="w-6 h-6 object-contain" />
                                     </div>
-                                    <div>
-                                        <h2 className="font-black text-white italic uppercase leading-none text-xl tracking-tight">V-REPORT</h2>
-                                        <p className="text-[9px] font-black text-emerald-400 uppercase mt-1 tracking-widest italic opacity-80">Academy Center</p>
-                                    </div>
+                                    <h2 className="font-black text-white italic uppercase text-md tracking-tight leading-none">V-REPORT</h2>
                                 </div>
-                                <button 
-                                    onClick={() => window.location.reload()} 
-                                    className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white/40 hover:text-red-400 hover:bg-red-500/10 transition-all border border-white/10"
-                                >
-                                    <i className="fas fa-sign-out-alt"></i>
+                                <button onClick={() => window.location.reload()} className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-white/40 hover:text-red-400 border border-white/10">
+                                    <i className="fas fa-power-off text-xs"></i>
                                 </button>
                             </div>
                         </nav>
 
-                        <main className="max-w-4xl mx-auto p-4 md:p-6 mt-4 pb-24">
-                            {/* User Profile Card */}
-                            <div className="glass-panel p-6 md:p-8 rounded-[2.5rem] text-white shadow-2xl mb-8 flex flex-col md:flex-row items-center gap-6 relative overflow-hidden group">
-                                <div className="absolute -top-12 -right-12 opacity-[0.03] rotate-12 transition-transform duration-1000 group-hover:rotate-45">
-                                    <i className="fas fa-graduation-cap text-[220px]"></i>
+                        <main className="max-w-2xl mx-auto p-4 pb-20">
+                            {/* Profile Compact */}
+                            <div className="glass-panel p-4 rounded-[1.5rem] text-white shadow-xl mb-4 flex items-center gap-4 relative overflow-hidden group">
+                                <div className="w-12 h-12 bg-emerald-500 rounded-xl flex items-center justify-center text-slate-900 z-10 shrink-0">
+                                    <i className="fas fa-user-graduate text-xl"></i>
                                 </div>
-                                <div className="w-20 h-20 bg-emerald-500 rounded-3xl flex items-center justify-center text-slate-900 shadow-2xl z-10 border-4 border-white/10">
-                                    <i className="fas fa-user-check text-3xl"></i>
-                                </div>
-                                <div className="text-center md:text-left z-10 flex-1">
-                                    <h3 className="text-3xl font-black uppercase italic tracking-tighter leading-tight">{user?.nama}</h3>
-                                    <div className="flex flex-wrap justify-center md:justify-start gap-2 mt-4">
-                                        <span className="px-5 py-2 bg-white/5 rounded-full text-[10px] font-black uppercase tracking-widest border border-white/10 italic backdrop-blur-md">NIS: {user?.nis}</span>
-                                        <span className="px-5 py-2 bg-emerald-500/10 rounded-full text-[10px] font-black uppercase tracking-widest border border-emerald-500/20 italic backdrop-blur-md text-emerald-300">Kelas: {user?.kelas}</span>
+                                <div className="z-10 flex-1 min-w-0">
+                                    <h3 className="text-lg font-black uppercase italic tracking-tighter truncate leading-none">{user?.nama}</h3>
+                                    <div className="flex gap-2 mt-1.5">
+                                        <span className="px-2 py-0.5 bg-white/5 rounded-md text-[8px] font-bold uppercase tracking-tighter border border-white/10 italic">NIS: {user?.nis}</span>
+                                        <span className="px-2 py-0.5 bg-emerald-500/10 rounded-md text-[8px] font-bold uppercase tracking-tighter border border-emerald-500/20 italic text-emerald-300">Kelas: {user?.kelas}</span>
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Main Tab Controller */}
-                            <div className="flex bg-slate-900/40 backdrop-blur-xl rounded-[2rem] p-1.5 border border-white/10 mb-10 sticky top-24 z-40 shadow-2xl">
-                                <button 
-                                    onClick={() => setActiveTab('nilai')} 
-                                    className={`flex-1 py-4 rounded-[1.6rem] text-xs font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 ${activeTab === 'nilai' ? 'bg-emerald-500 text-slate-900 shadow-xl' : 'text-white/40 hover:bg-white/5'}`}
-                                >
-                                    <i className="fas fa-star-half-alt"></i> Nilai Tugas
+                            {/* Tab Slim */}
+                            <div className="flex bg-slate-900/40 rounded-[1.2rem] p-1 border border-white/10 mb-6 sticky top-16 z-40">
+                                <button onClick={() => setActiveTab('nilai')} className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'nilai' ? 'bg-emerald-500 text-slate-900 shadow-md' : 'text-white/40'}`}>
+                                    NILAI TUGAS
                                 </button>
-                                <button 
-                                    onClick={() => setActiveTab('kehadiran')} 
-                                    className={`flex-1 py-4 rounded-[1.6rem] text-xs font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 ${activeTab === 'kehadiran' ? 'bg-emerald-500 text-slate-900 shadow-xl' : 'text-white/40 hover:bg-white/5'}`}
-                                >
-                                    <i className="fas fa-user-clock"></i> Kehadiran
+                                <button onClick={() => setActiveTab('kehadiran')} className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'kehadiran' ? 'bg-emerald-500 text-slate-900 shadow-md' : 'text-white/40'}`}>
+                                    KEHADIRAN
                                 </button>
                             </div>
 
-                            {/* Academic List */}
-                            <div className="space-y-10">
+                            <div className="space-y-4">
                                 {subjects.map(subject => {
                                     const data = academicData.filter(d => d.mapel === subject);
                                     const accentColor = subject === "Matematika" ? "bg-blue-500" : subject === "B. Indonesia" ? "bg-amber-500" : "bg-red-500";
-                                    const accentBorder = subject === "Matematika" ? "border-blue-500/50" : subject === "B. Indonesia" ? "border-amber-500/50" : "border-red-500/50";
-                                    
                                     return (
-                                        <div key={subject} className={`glass-panel rounded-[2.5rem] shadow-2xl overflow-hidden animate-fade-up border-t-2 ${accentBorder}`}>
-                                            {/* Header */}
-                                            <div className="p-6 border-b border-white/5 flex items-center justify-between bg-white/5">
-                                                <div className="flex items-center gap-3">
-                                                    <div className={`w-10 h-10 rounded-xl ${accentColor} flex items-center justify-center text-white shadow-xl`}>
-                                                        <i className="fas fa-book-reader"></i>
+                                        <div key={subject} className="glass-panel rounded-[1.5rem] shadow-lg overflow-hidden animate-fade-in">
+                                            <div className="px-4 py-3 border-b border-white/5 flex items-center justify-between bg-white/5">
+                                                <div className="flex items-center gap-2">
+                                                    <div className={`w-6 h-6 rounded-lg ${accentColor} flex items-center justify-center text-[10px] text-white shadow-md`}>
+                                                        <i className="fas fa-book"></i>
                                                     </div>
-                                                    <h4 className="font-black text-white uppercase italic tracking-tighter text-lg">{subject}</h4>
+                                                    <h4 className="font-black text-white uppercase italic tracking-tighter text-sm">{subject}</h4>
                                                 </div>
-                                                <span className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em] bg-white/5 px-4 py-1.5 rounded-full border border-white/10">
-                                                    {data.length} DATA
-                                                </span>
+                                                <span className="text-[8px] font-bold text-white/30 tracking-widest">{data.length} DATA</span>
                                             </div>
                                             
-                                            <div className="p-8">
+                                            <div className="p-4">
                                                 {activeTab === 'nilai' ? (
-                                                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-5">
+                                                    <div className="grid grid-cols-4 gap-2">
                                                         {data.map((d, i) => (
-                                                            <div key={i} className="bg-white/5 p-6 rounded-[2.5rem] text-center border border-white/5 hover:bg-white/10 hover:border-emerald-500/40 transition-all group shadow-sm">
-                                                                <p className="text-[9px] font-black text-white/20 uppercase mb-2 tracking-widest group-hover:text-emerald-400">Sesi {d.pertemuan}</p>
-                                                                <p className="text-4xl font-black text-white tracking-tighter">{d.nilai}</p>
+                                                            <div key={i} className="bg-white/5 p-3 rounded-xl text-center border border-white/5">
+                                                                <p className="text-[7px] font-black text-white/20 uppercase mb-0.5">S{d.pertemuan}</p>
+                                                                <p className="text-xl font-black text-white leading-tight">{d.nilai}</p>
                                                             </div>
                                                         ))}
-                                                        {data.length === 0 && (
-                                                            <div className="col-span-full py-10 text-center opacity-30 border-2 border-dashed border-white/10 rounded-3xl">
-                                                                <p className="text-white text-[10px] font-black uppercase italic tracking-widest">Data nilai kosong</p>
-                                                            </div>
-                                                        )}
+                                                        {data.length === 0 && <p className="col-span-full py-2 text-center text-[8px] opacity-20 uppercase tracking-[0.3em]">Kosong</p>}
                                                     </div>
                                                 ) : (
-                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                    <div className="space-y-1.5">
                                                         {data.map((d, i) => (
-                                                            <div key={i} className="flex items-center justify-between p-5 bg-white/5 rounded-3xl border border-white/5 hover:bg-white/10 transition-all group">
-                                                                <div className="flex items-center gap-4">
-                                                                    <div className={`w-3 h-3 rounded-full ${d.status === 'Hadir' ? 'bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.6)]' : 'bg-red-400 shadow-[0_0_12px_rgba(248,113,113,0.6)]'} animate-pulse`}></div>
-                                                                    <div>
-                                                                        <p className="text-[9px] font-black text-white/20 uppercase tracking-widest leading-none mb-1">Pertemuan</p>
-                                                                        <p className="text-sm font-black text-white uppercase italic tracking-tight">Sesi Ke-{d.pertemuan}</p>
-                                                                    </div>
+                                                            <div key={i} className="flex items-center justify-between p-2.5 bg-white/5 rounded-xl border border-white/5">
+                                                                <div className="flex items-center gap-2">
+                                                                    <div className={`w-1.5 h-1.5 rounded-full ${d.status === 'Hadir' ? 'bg-emerald-400' : 'bg-red-400'}`}></div>
+                                                                    <p className="text-[10px] font-black text-white uppercase italic">Sesi {d.pertemuan}</p>
                                                                 </div>
-                                                                <div className={`px-5 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest border transition-all ${
-                                                                    d.status === 'Hadir' ? 'bg-emerald-500/10 text-emerald-300 border-emerald-500/20' : 
-                                                                    d.status === 'Alfa' ? 'bg-red-500/10 text-red-300 border-red-500/20' : 'bg-amber-500/10 text-amber-300 border-amber-500/20'
-                                                                }`}>
+                                                                <div className={`px-2 py-0.5 rounded-md text-[8px] font-black uppercase tracking-tighter border ${d.status === 'Hadir' ? 'bg-emerald-500/10 text-emerald-300 border-emerald-500/20' : 'bg-red-500/10 text-red-300 border-red-500/20'}`}>
                                                                     {d.status}
                                                                 </div>
                                                             </div>
                                                         ))}
-                                                        {data.length === 0 && (
-                                                            <div className="col-span-full py-10 text-center opacity-30 border-2 border-dashed border-white/10 rounded-3xl">
-                                                                <p className="text-white text-[10px] font-black uppercase italic tracking-widest">Data absensi kosong</p>
-                                                            </div>
-                                                        )}
+                                                        {data.length === 0 && <p className="py-2 text-center text-[8px] opacity-20 uppercase tracking-[0.3em]">Kosong</p>}
                                                     </div>
                                                 )}
                                             </div>
@@ -306,10 +218,8 @@
                                 })}
                             </div>
 
-                            <footer className="mt-24 text-center pb-12">
-                                <div className="h-[2px] w-12 bg-emerald-500/30 mx-auto mb-8 rounded-full"></div>
-                                <p className="text-[11px] font-black text-white/30 uppercase tracking-[0.8em] italic">Bimbel Bisa Education</p>
-                                <p className="text-[9px] font-bold text-emerald-500/20 uppercase tracking-[0.3em] mt-3">Smart Learning Ecosystem • 2024</p>
+                            <footer className="mt-12 text-center pb-8 opacity-20">
+                                <p className="text-[8px] font-black text-white uppercase tracking-[0.6em] italic">Bimbel Bisa Education</p>
                             </footer>
                         </main>
                     </div>
