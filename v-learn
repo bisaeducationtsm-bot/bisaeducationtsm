@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BISA Education - Platform Video</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass-morphism {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        .no-click-layer {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 80px;
+            z-index: 50;
+            background: transparent;
+        }
+    </style>
+</head>
+<body class="bg-[#f0f4f2]">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useCallback } = React;
+
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbwJMepe6Jg6Oo3u1s36z8EphxstepV8oHKBEp7B7MHsOxIg88HZQW3Va0fnMOBN1Dbh/exec";
+        const TRY_OUT_URL = "https://forms.microsoft.com/pages/responsepage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAAO__psMDNVUNEtJOUQwMjc0SFdKWlQwM09YRDRNSDBBUC4u&route=shorturl"; // Ganti dengan link website Try Out Anda
+        const logoUrl = "https://cdn.phototourl.com/free/2026-05-01-afe30d6d-f5c0-408f-b08f-587a4e7b39d4.png";
+        const bgUrl = "https://i.pinimg.com/736x/ac/30/51/ac3051695f87c3f8cadd1e39a6f51651.jpg";
+
+        function App() {
+            const [loginStep, setLoginStep] = useState('login');
+            const [voucherCode, setVoucherCode] = useState('');
+            const [voucherPass, setVoucherPass] = useState('');
+            const [folders, setFolders] = useState([]);
+            const [selectedFolder, setSelectedFolder] = useState(null);
+            const [currentVideo, setCurrentVideo] = useState(null);
+            const [loading, setLoading] = useState(false);
+            const [error, setError] = useState('');
+
+            const getEmbedUrl = (url) => {
+                if (!url) return "";
+                let fileId = "";
+                if (url.includes('/file/d/')) {
+                    fileId = url.split('/file/d/')[1].split('/')[0].split('?')[0];
+                } else if (url.includes('id=')) {
+                    fileId = url.split('id=')[1].split('&')[0];
+                }
+                return fileId ? `https://drive.google.com/file/d/${fileId}/preview?rm=minimal` : url;
+            };
+
+            const fetchContent = async () => {
+                try {
+                    const res = await fetch(`${GAS_URL}?action=getContent`);
+                    const data = await res.json();
+                    setFolders(data);
+                } catch (e) {
+                    console.error("Gagal ambil data", e);
+                }
+            };
+
+            const handleLogin = async (e) => {
+                e.preventDefault();
+                setLoading(true);
+                setError('');
+                try {
+                    const res = await fetch(`${GAS_URL}?action=checkVoucher&code=${voucherCode}&pass=${voucherPass}`);
+                    const result = await res.json();
+                    if (result.success) {
+                        setLoginStep('dashboard');
+                        fetchContent();
+                    } else {
+                        setError("Voucher atau Password Salah!");
+                    }
+                } catch (err) {
+                    setError("Gangguan koneksi ke database.");
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            if (loginStep === 'login') {
+                return (
+                    <div className="min-h-screen relative flex items-center justify-center p-4 overflow-hidden">
+                        <div className="absolute inset-0 z-0 bg-cover bg-center" style={{ backgroundImage: `url(${bgUrl})` }}></div>
+                        <div className="absolute inset-0 z-1 bg-white/60 backdrop-blur-md"></div>
+                        <div className="max-w-md w-full bg-white/90 glass-morphism rounded-[2.5rem] shadow-2xl p-10 relative z-10">
+                            <div className="text-center mb-10">
+                                <img src={logoUrl} className="w-20 h-20 mx-auto rounded-2xl shadow-lg mb-4" />
+                                <h1 className="text-2xl font-black text-emerald-700 italic uppercase">BISA <span className="text-slate-800">EDUCATION</span></h1>
+                                <p className="text-[10px] font-bold text-slate-400 mt-2 tracking-widest uppercase">Platform Pembelajaran Eksklusif</p>
+                            </div>
+                            <form onSubmit={handleLogin} className="space-y-4">
+                                {error && <div className="p-3 bg-red-100 text-red-600 rounded-xl text-[10px] font-bold text-center">{error}</div>}
+                                <input type="text" placeholder="KODE VOUCHER" className="w-full p-4 border rounded-2xl text-center font-mono uppercase" onChange={e => setVoucherCode(e.target.value)} required />
+                                <input type="password" placeholder="PASSWORD" className="w-full p-4 border rounded-2xl text-center" onChange={e => setVoucherPass(e.target.value)} required />
+                                <button className="w-full bg-emerald-600 text-white font-black py-4 rounded-2xl shadow-lg hover:bg-emerald-700 transition-all">
+                                    {loading ? "MENGECEK..." : "MASUK KE KELAS"}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="min-h-screen flex flex-col md:flex-row">
+                    <aside className="w-full md:w-72 bg-white border-r p-6 flex flex-col h-screen sticky top-0">
+                        <div className="flex items-center gap-3 pb-6 border-b">
+                            <img src={logoUrl} className="w-10 h-10 rounded-lg" />
+                            <span className="font-black text-emerald-800 text-xl italic uppercase">V-LEARN</span>
+                        </div>
+                        <nav className="flex-1 space-y-2 mt-6 overflow-y-auto">
+                            <button onClick={() => {setSelectedFolder(null); setCurrentVideo(null);}} className={`w-full text-left px-4 py-3 rounded-xl font-bold text-sm ${!selectedFolder ? 'bg-emerald-600 text-white shadow-md' : 'text-slate-500 hover:bg-emerald-50'}`}>
+                                <i className="fas fa-book-open mr-2 w-5"></i> Semua Materi
+                            </button>
+                            
+                            {/* Tombol Try Out Baru */}
+                            <a href={TRY_OUT_URL} target="_blank" rel="noopener noreferrer" className="w-full text-left px-4 py-3 rounded-xl font-bold text-sm text-amber-600 hover:bg-amber-50 flex items-center transition-all border border-transparent hover:border-amber-200">
+                                <i className="fas fa-pencil-alt mr-2 w-5 text-amber-500"></i> Try Out Online
+                            </a>
+
+                            <div className="pt-4 pb-2 px-4 text-[10px] font-black text-slate-300 uppercase tracking-widest">Daftar Materi</div>
+                            {folders.map(f => (
+                                <button key={f.id} onClick={() => {setSelectedFolder(f); setCurrentVideo(null);}} className={`w-full text-left px-4 py-3 rounded-xl text-sm transition-all ${selectedFolder?.id === f.id ? 'bg-emerald-50 text-emerald-700 font-bold border border-emerald-100 shadow-sm' : 'text-slate-500 hover:bg-slate-50'}`}>
+                                    <i className="fas fa-folder mr-2 w-5 opacity-50"></i> {f.name}
+                                </button>
+                            ))}
+                        </nav>
+                        <div className="pt-4 border-t mt-auto">
+                            <button onClick={() => window.location.reload()} className="w-full py-3 text-red-500 font-bold text-xs uppercase border border-red-100 rounded-xl hover:bg-red-50 transition-all flex items-center justify-center gap-2">
+                                <i className="fas fa-sign-out-alt"></i> Keluar Akun
+                            </button>
+                        </div>
+                    </aside>
+
+                    <main className="flex-1 p-6 md:p-10 overflow-y-auto bg-[#f8fafc]">
+                        {!selectedFolder && (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {folders.map(f => (
+                                    <div key={f.id} onClick={() => setSelectedFolder(f)} className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl cursor-pointer transition-all group overflow-hidden relative">
+                                        <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-emerald-600 group-hover:text-white transition-all shadow-sm">
+                                            <i className="fas fa-folder text-xl"></i>
+                                        </div>
+                                        <h3 className="font-black text-lg uppercase italic text-slate-800">{f.name}</h3>
+                                        <p className="text-xs text-slate-400 mt-2 line-clamp-2 leading-relaxed">{f.description}</p>
+                                        <div className="mt-6 flex items-center justify-between">
+                                            <span className="text-[9px] font-black bg-slate-100 px-3 py-1 rounded-full uppercase text-slate-500">{f.videos.length} Modul</span>
+                                            <i className="fas fa-chevron-right text-slate-200 group-hover:text-emerald-500 transform group-hover:translate-x-1 transition-all"></i>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        {selectedFolder && !currentVideo && (
+                            <div className="max-w-3xl mx-auto">
+                                <button onClick={() => setSelectedFolder(null)} className="text-emerald-600 font-black text-[10px] mb-8 uppercase flex items-center gap-2 tracking-widest bg-emerald-50 px-4 py-2 rounded-full border border-emerald-100">
+                                    <i className="fas fa-arrow-left"></i> Kembali Ke Dashboard
+                                </button>
+                                <h2 className="text-3xl font-black mb-8 uppercase italic text-slate-800 border-l-8 border-emerald-600 pl-4">{selectedFolder.name}</h2>
+                                <div className="space-y-3">
+                                    {selectedFolder.videos.map((v, i) => (
+                                        <div key={v.id} onClick={() => setCurrentVideo(v)} className="bg-white p-5 rounded-2xl border border-slate-100 flex items-center gap-4 hover:border-emerald-500 hover:shadow-md cursor-pointer transition-all group">
+                                            <div className="w-12 h-12 bg-emerald-600 text-white rounded-xl flex items-center justify-center shrink-0 shadow-lg group-hover:scale-110 transition-all">
+                                                <i className="fas fa-play text-sm"></i>
+                                            </div>
+                                            <div className="flex-1">
+                                                <div className="font-black text-sm uppercase text-slate-800">{v.title}</div>
+                                                <div className="text-[10px] text-slate-400 font-bold uppercase mt-1">Durasi: {v.duration || 'Tersedia'}</div>
+                                            </div>
+                                            <i className="fas fa-chevron-right text-slate-100 group-hover:text-emerald-500 transition-colors"></i>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {currentVideo && (
+                            <div className="max-w-4xl mx-auto">
+                                <button onClick={() => setCurrentVideo(null)} className="text-emerald-600 font-black text-[10px] mb-8 uppercase flex items-center gap-2 tracking-widest bg-emerald-50 px-4 py-2 rounded-full border border-emerald-100">
+                                    <i className="fas fa-arrow-left"></i> Kembali ke Daftar Video
+                                </button>
+                                <div className="bg-black rounded-[2.5rem] overflow-hidden aspect-video relative shadow-2xl border-[8px] border-white ring-1 ring-slate-100">
+                                    <iframe src={getEmbedUrl(currentVideo.url)} className="w-full h-full absolute inset-0" allowFullScreen></iframe>
+                                    <div className="no-click-layer"></div>
+                                </div>
+                                <div className="mt-8 bg-white p-10 rounded-[2.5rem] border border-slate-100 relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 p-8 opacity-[0.03]">
+                                        <i className="fas fa-play text-[150px] text-emerald-900"></i>
+                                    </div>
+                                    <h1 className="text-3xl font-black uppercase italic text-slate-900 leading-tight relative z-10">{currentVideo.title}</h1>
+                                    <div className="mt-6 p-5 bg-emerald-50 rounded-2xl flex items-start gap-4 border border-emerald-100 relative z-10">
+                                        <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center shrink-0">
+                                            <i className="fas fa-shield-alt text-emerald-600 text-lg"></i>
+                                        </div>
+                                        <div>
+                                            <p className="text-xs font-black text-emerald-900 uppercase mb-1">Proteksi Keamanan Aktif</p>
+                                            <p className="text-[11px] text-emerald-700 leading-relaxed font-semibold opacity-80">Konten ini dilindungi. Akses unduh dan berbagi luar platform telah dinonaktifkan untuk menjaga eksklusivitas materi belajar Anda.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </main>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
