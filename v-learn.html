@@ -14,7 +14,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
         
         :root {
-            --glass-bg: rgba(15, 23, 42, 0.6);
+            --glass-bg: rgba(15, 23, 42, 0.7);
             --glass-border: rgba(255, 255, 255, 0.1);
         }
 
@@ -70,6 +70,15 @@
             border: 0;
         }
 
+        .bg-fixed-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            background-size: cover;
+            background-position: center;
+            opacity: 0.3;
+        }
+
         .bg-orb {
             position: fixed;
             width: 40vw;
@@ -94,20 +103,13 @@
 <body>
     <div id="root"></div>
 
-    <div class="bg-orb top-[-10%] left-[-10%] bg-emerald-500 animate-pulse-slow"></div>
-    <div class="bg-orb bottom-[10%] right-[-10%] bg-indigo-500 animate-pulse-slow" style="animation-delay: 2s;"></div>
-
     <script type="text/babel">
         const { useState, useEffect } = React;
 
-        // URL JEMBATAN DATA GAS
         const GAS_URL = "https://script.google.com/macros/s/AKfycbwJMepe6Jg6Oo3u1s36z8EphxstepV8oHKBEp7B7MHsOxIg88HZQW3Va0fnMOBN1Dbh/exec";
         const logoUrl = "https://iili.io/BiNUvSa.png";
         const bgUrl = "https://i.pinimg.com/736x/ac/30/51/ac3051695f87c3f8cadd1e39a6f51651.jpg";
 
-        /**
-         * FUNGSI KRUSIAL: Memastikan URL video dipaksa ke mode PREVIEW di sisi Client.
-         */
         const forcePreviewUrl = (url) => {
             if (!url || typeof url !== 'string') return '';
             if (url.includes('drive.google.com')) {
@@ -158,7 +160,7 @@
                         setLoginStep('dashboard');
                         fetchContent();
                     } else {
-                        setError("Voucher atau Password kamu Salah/kedaluarsa");
+                        setError("Voucher atau Password Salah!");
                     }
                 } catch (err) {
                     setError("Gagal terhubung ke database.");
@@ -175,176 +177,181 @@
                 setIsSidebarOpen(false);
             };
 
-            if (loginStep === 'login') {
-                return (
-                    <div className="min-h-screen relative flex items-center justify-center p-6">
-                        <div className="absolute inset-0 z-0 bg-cover bg-center opacity-30" style={{ backgroundImage: `url(${bgUrl})` }}></div>
-                        <div className="max-w-md w-full glass-panel rounded-[2.5rem] shadow-2xl p-10 relative z-10 border border-white/10">
-                            <div className="text-center mb-10">
-                                <div className="inline-block p-4 rounded-3xl bg-emerald-500/10 border border-emerald-500/20 mb-6">
-                                    <img src={logoUrl} className="w-16 h-16 object-contain" alt="Logo" />
+            return (
+                <div className="min-h-screen relative overflow-x-hidden">
+                    {/* Persistent Background Elements */}
+                    <div className="bg-fixed-overlay" style={{ backgroundImage: `url(${bgUrl})` }}></div>
+                    <div className="bg-orb top-[-10%] left-[-10%] bg-emerald-500 animate-pulse-slow"></div>
+                    <div className="bg-orb bottom-[10%] right-[-10%] bg-indigo-500 animate-pulse-slow" style={{ animationDelay: '2s' }}></div>
+
+                    {loginStep === 'login' ? (
+                        <div className="min-h-screen flex items-center justify-center p-6 relative z-10">
+                            <div className="max-w-md w-full glass-panel rounded-[2.5rem] shadow-2xl p-10 border border-white/10">
+                                <div className="text-center mb-10">
+                                    <div className="inline-block p-4 rounded-3xl bg-emerald-500/10 border border-emerald-500/20 mb-6">
+                                        <img src={logoUrl} className="w-16 h-16 object-contain" alt="Logo" />
+                                    </div>
+                                    <h1 className="text-2xl font-extrabold text-white tracking-tight italic uppercase">BISA <span className="text-emerald-400">EDUCATION</span></h1>
+                                    <p className="text-[10px] font-bold text-slate-400 mt-2 tracking-[0.3em] uppercase">Virtual Learning Platform</p>
                                 </div>
-                                <h1 className="text-2xl font-extrabold text-white tracking-tight italic uppercase">BISA <span className="text-emerald-400">EDUCATION</span></h1>
-                                <p className="text-[10px] font-bold text-slate-400 mt-2 tracking-[0.3em] uppercase">Virtual Learning Platform</p>
+                                <form onSubmit={handleLogin} className="space-y-5">
+                                    {error && (
+                                        <div className="p-4 bg-rose-500/10 text-rose-400 rounded-2xl text-xs font-bold text-center border border-rose-500/20">
+                                            <i className="fas fa-exclamation-circle mr-2"></i>{error}
+                                        </div>
+                                    )}
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-bold text-slate-500 ml-4 uppercase tracking-widest">Kode Voucher</label>
+                                        <input 
+                                            type="text" 
+                                            placeholder="MASUKKAN KODE" 
+                                            className="w-full p-4 bg-slate-800/50 border border-slate-700/50 rounded-2xl text-center font-mono uppercase text-white outline-none focus:ring-2 focus:ring-emerald-500/40 transition-all placeholder:text-slate-600" 
+                                            onChange={e => setVoucherCode(e.target.value)} 
+                                            required 
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-bold text-slate-500 ml-4 uppercase tracking-widest">Password</label>
+                                        <input 
+                                            type="password" 
+                                            placeholder="••••••••" 
+                                            className="w-full p-4 bg-slate-800/50 border border-slate-700/50 rounded-2xl text-center text-white outline-none focus:ring-2 focus:ring-emerald-500/40 transition-all placeholder:text-slate-600" 
+                                            onChange={e => setVoucherPass(e.target.value)} 
+                                            required 
+                                        />
+                                    </div>
+                                    <button className="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold py-5 rounded-2xl shadow-lg shadow-emerald-500/20 transition-all active:scale-[0.98] mt-4 uppercase tracking-wider">
+                                        {loading ? <i className="fas fa-circle-notch fa-spin mr-2"></i> : "Akses Sekarang"}
+                                    </button>
+                                </form>
                             </div>
-                            <form onSubmit={handleLogin} className="space-y-5">
-                                {error && (
-                                    <div className="p-4 bg-rose-500/10 text-rose-400 rounded-2xl text-xs font-bold text-center border border-rose-500/20">
-                                        <i className="fas fa-exclamation-circle mr-2"></i>{error}
+                        </div>
+                    ) : (
+                        <div className="min-h-screen flex flex-col md:flex-row relative z-10">
+                            {/* Mobile Header */}
+                            <header className="md:hidden glass-panel sticky top-0 z-50 flex items-center justify-between px-6 py-4 border-b border-white/5">
+                                <div className="flex items-center gap-3">
+                                    <img src={logoUrl} className="w-8 h-8 rounded-lg" alt="Logo" />
+                                    <span className="font-extrabold text-emerald-400 text-lg italic uppercase tracking-tighter">V-LEARN</span>
+                                </div>
+                                <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-slate-300">
+                                    <i className={`fas ${isSidebarOpen ? 'fa-times' : 'fa-bars'}`}></i>
+                                </button>
+                            </header>
+
+                            {/* Sidebar */}
+                            <aside className={`fixed inset-y-0 left-0 z-50 w-72 glass-panel border-r border-white/5 transform transition-transform duration-500 ease-out md:relative md:translate-x-0 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+                                <div className="flex flex-col h-full p-8">
+                                    <div className="hidden md:flex items-center gap-4 mb-12">
+                                        <div className="p-2 bg-emerald-500/10 rounded-xl border border-emerald-500/20">
+                                            <img src={logoUrl} className="w-8 h-8" alt="Logo" />
+                                        </div>
+                                        <span className="font-black text-white text-xl italic uppercase tracking-tighter">V-LEARN</span>
+                                    </div>
+
+                                    <nav className="flex-1 space-y-3 overflow-y-auto no-scrollbar">
+                                        <button onClick={resetViews} className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-sm font-bold transition-all ${(!selectedFolder && !isTOListActive && !activeTryOut) ? 'bg-emerald-500 text-slate-950 shadow-lg shadow-emerald-500/20' : 'text-slate-400 hover:bg-white/5'}`}>
+                                            <i className="fas fa-house"></i> Dashboard
+                                        </button>
+
+                                        {tryOuts.length > 0 && (
+                                            <button onClick={() => {setIsTOListActive(true); setActiveTryOut(null); setSelectedFolder(null); setIsSidebarOpen(false);}} className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-sm font-bold transition-all ${isTOListActive || activeTryOut ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/20' : 'text-slate-400 hover:bg-white/5 border border-transparent hover:border-indigo-500/30'}`}>
+                                                <i className="fas fa-pen-to-square"></i> Try Out Online
+                                            </button>
+                                        )}
+
+                                        <div className="pt-8 pb-4 px-5 text-[10px] font-black text-slate-600 uppercase tracking-[0.3em]">Modul Pembelajaran</div>
+                                        {folders.map(f => (
+                                            <button key={f.id} onClick={() => {setSelectedFolder(f); setCurrentVideo(null); setIsTOListActive(false); setActiveTryOut(null); setIsSidebarOpen(false);}} className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-sm transition-all ${selectedFolder?.id === f.id ? 'bg-white/10 text-emerald-400 border border-emerald-500/20 font-bold' : 'text-slate-500 hover:text-slate-300 hover:bg-white/5'}`}>
+                                                <i className={`fas ${selectedFolder?.id === f.id ? 'fa-folder-open' : 'fa-folder'} opacity-70`}></i> {f.name}
+                                            </button>
+                                        ))}
+                                    </nav>
+                                    <div className="pt-4 border-t border-white/5 mt-auto">
+                                        <button onClick={() => window.location.reload()} className="w-full py-3 text-rose-500 font-bold text-[10px] uppercase border border-rose-500/10 rounded-xl hover:bg-rose-500/5 transition-all flex items-center justify-center gap-2 tracking-widest">
+                                            <i className="fas fa-sign-out-alt"></i> Keluar
+                                        </button>
+                                    </div>
+                                </div>
+                            </aside>
+
+                            {/* Main View */}
+                            <main className="flex-1 p-6 md:p-12 overflow-y-auto no-scrollbar relative">
+                                {!selectedFolder && !isTOListActive && !activeTryOut && (
+                                    <div className="max-w-6xl mx-auto animate-in fade-in slide-in-from-top-4 duration-700 text-center py-20">
+                                        <h2 className="text-4xl font-black text-white italic uppercase tracking-tighter">Selamat Datang</h2>
+                                        <p className="text-emerald-400 mt-4 font-bold tracking-widest text-xs uppercase">Silakan pilih kategori materi di samping untuk mulai belajar.</p>
                                     </div>
                                 )}
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-bold text-slate-500 ml-4 uppercase tracking-widest">Kode Voucher</label>
-                                    <input 
-                                        type="text" 
-                                        placeholder="MASUKKAN KODE" 
-                                        className="w-full p-4 bg-slate-800/50 border border-slate-700/50 rounded-2xl text-center font-mono uppercase text-white outline-none focus:ring-2 focus:ring-emerald-500/40 transition-all placeholder:text-slate-600" 
-                                        onChange={e => setVoucherCode(e.target.value)} 
-                                        required 
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-bold text-slate-500 ml-4 uppercase tracking-widest">Password</label>
-                                    <input 
-                                        type="password" 
-                                        placeholder="••••••••" 
-                                        className="w-full p-4 bg-slate-800/50 border border-slate-700/50 rounded-2xl text-center text-white outline-none focus:ring-2 focus:ring-emerald-500/40 transition-all placeholder:text-slate-600" 
-                                        onChange={e => setVoucherPass(e.target.value)} 
-                                        required 
-                                    />
-                                </div>
-                                <button className="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold py-5 rounded-2xl shadow-lg shadow-emerald-500/20 transition-all active:scale-[0.98] mt-4 uppercase tracking-wider">
-                                    {loading ? <i className="fas fa-circle-notch fa-spin mr-2"></i> : "Akses Sekarang"}
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                );
-            }
 
-            return (
-                <div className="min-h-screen flex flex-col md:flex-row">
-                    {/* Mobile Header */}
-                    <header className="md:hidden glass-panel sticky top-0 z-50 flex items-center justify-between px-6 py-4 border-b border-white/5">
-                        <div className="flex items-center gap-3">
-                            <img src={logoUrl} className="w-8 h-8 rounded-lg" alt="Logo" />
-                            <span className="font-extrabold text-emerald-400 text-lg italic uppercase tracking-tighter">V-LEARN</span>
-                        </div>
-                        <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-slate-300">
-                            <i className={`fas ${isSidebarOpen ? 'fa-times' : 'fa-bars'}`}></i>
-                        </button>
-                    </header>
-
-                    {/* Sidebar */}
-                    <aside className={`fixed inset-y-0 left-0 z-50 w-72 glass-panel border-r border-white/5 transform transition-transform duration-500 ease-out md:relative md:translate-x-0 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-                        <div className="flex flex-col h-full p-8">
-                            <div className="hidden md:flex items-center gap-4 mb-12">
-                                <div className="p-2 bg-emerald-500/10 rounded-xl border border-emerald-500/20">
-                                    <img src={logoUrl} className="w-8 h-8" alt="Logo" />
-                                </div>
-                                <span className="font-black text-white text-xl italic uppercase tracking-tighter">V-LEARN</span>
-                            </div>
-
-                            <nav className="flex-1 space-y-3 overflow-y-auto no-scrollbar">
-                                <button onClick={resetViews} className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-sm font-bold transition-all ${(!selectedFolder && !isTOListActive && !activeTryOut) ? 'bg-emerald-500 text-slate-950 shadow-lg shadow-emerald-500/20' : 'text-slate-400 hover:bg-white/5'}`}>
-                                    <i className="fas fa-house"></i> Dashboard
-                                </button>
-
-                                {tryOuts.length > 0 && (
-                                    <button onClick={() => {setIsTOListActive(true); setActiveTryOut(null); setSelectedFolder(null); setIsSidebarOpen(false);}} className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-sm font-bold transition-all ${isTOListActive || activeTryOut ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/20' : 'text-slate-400 hover:bg-white/5 border border-transparent hover:border-indigo-500/30'}`}>
-                                        <i className="fas fa-pen-to-square"></i> Try Out Online
-                                    </button>
+                                {selectedFolder && !currentVideo && (
+                                    <div className="max-w-4xl mx-auto animate-in fade-in duration-500">
+                                        <button onClick={() => setSelectedFolder(null)} className="mb-10 text-slate-400 hover:text-emerald-400 text-[10px] font-bold uppercase tracking-widest flex items-center gap-3">
+                                            <i className="fas fa-arrow-left"></i> Kembali
+                                        </button>
+                                        <div className="space-y-4">
+                                            {selectedFolder.videos.map((v) => (
+                                                <div key={v.id} onClick={() => setCurrentVideo(v)} className="glass-card p-6 rounded-3xl flex items-center gap-6 cursor-pointer group">
+                                                    <div className="w-12 h-12 bg-emerald-500/10 text-emerald-400 rounded-2xl flex items-center justify-center shrink-0 group-hover:bg-emerald-500 group-hover:text-slate-950 transition-all duration-500">
+                                                        <i className="fas fa-play text-xs"></i>
+                                                    </div>
+                                                    <div className="flex-1">
+                                                        <h4 className="font-bold text-white group-hover:text-emerald-400 transition-colors uppercase italic text-sm">{v.title}</h4>
+                                                        <p className="text-[10px] text-slate-500 font-bold uppercase mt-1 tracking-widest">{v.duration || 'Ready'}</p>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
                                 )}
 
-                                <div className="pt-8 pb-4 px-5 text-[10px] font-black text-slate-600 uppercase tracking-[0.3em]">Modul Pembelajaran</div>
-                                {folders.map(f => (
-                                    <button key={f.id} onClick={() => {setSelectedFolder(f); setCurrentVideo(null); setIsTOListActive(false); setActiveTryOut(null); setIsSidebarOpen(false);}} className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-sm transition-all ${selectedFolder?.id === f.id ? 'bg-white/10 text-emerald-400 border border-emerald-500/20 font-bold' : 'text-slate-500 hover:text-slate-300 hover:bg-white/5'}`}>
-                                        <i className={`fas ${selectedFolder?.id === f.id ? 'fa-folder-open' : 'fa-folder'} opacity-70`}></i> {f.name}
-                                    </button>
-                                ))}
-                            </nav>
-                        </div>
-                    </aside>
-
-                    {/* Main Content */}
-                    <main className="flex-1 p-6 md:p-12 overflow-y-auto no-scrollbar relative">
-                        {/* Welcome View */}
-                        {!selectedFolder && !isTOListActive && !activeTryOut && (
-                            <div className="max-w-6xl mx-auto animate-in fade-in slide-in-from-top-4 duration-700 text-center py-20">
-                                <h2 className="text-4xl font-black text-white italic uppercase tracking-tighter">Selamat Datang</h2>
-                                <p className="text-emerald-400 mt-4">Silakan pilih kategori materi di samping untuk mulai belajar.</p>
-                            </div>
-                        )}
-
-                        {/* Video List View */}
-                        {selectedFolder && !currentVideo && (
-                            <div className="max-w-4xl mx-auto animate-in fade-in duration-500">
-                                <button onClick={() => setSelectedFolder(null)} className="mb-10 text-slate-400 hover:text-emerald-400 text-[10px] font-bold uppercase tracking-widest flex items-center gap-3">
-                                    <i className="fas fa-arrow-left"></i> Kembali
-                                </button>
-                                <div className="space-y-4">
-                                    {selectedFolder.videos.map((v) => (
-                                        <div key={v.id} onClick={() => setCurrentVideo(v)} className="glass-card p-6 rounded-3xl flex items-center gap-6 cursor-pointer group">
-                                            <div className="w-12 h-12 bg-emerald-500/10 text-emerald-400 rounded-2xl flex items-center justify-center shrink-0 group-hover:bg-emerald-500 group-hover:text-slate-950 transition-all duration-500">
-                                                <i className="fas fa-play text-xs"></i>
-                                            </div>
-                                            <div className="flex-1">
-                                                <h4 className="font-bold text-white group-hover:text-emerald-400 transition-colors uppercase italic text-sm">{v.title}</h4>
-                                                <p className="text-[10px] text-slate-500 font-bold uppercase mt-1 tracking-widest">{v.duration || 'Ready'}</p>
+                                {currentVideo && (
+                                    <div className="max-w-5xl mx-auto animate-in slide-in-from-bottom-4 duration-500">
+                                        <button onClick={() => setCurrentVideo(null)} className="mb-8 text-slate-400 hover:text-emerald-400 text-[10px] font-bold uppercase tracking-widest flex items-center gap-3">
+                                            <i className="fas fa-arrow-left"></i> Kembali ke List
+                                        </button>
+                                        <div className="glass-panel p-2 rounded-[2rem] overflow-hidden bg-black shadow-2xl border border-white/10">
+                                            <div className="video-wrapper">
+                                                <iframe 
+                                                    src={forcePreviewUrl(currentVideo.url)} 
+                                                    allow="autoplay; fullscreen" 
+                                                    allowFullScreen
+                                                ></iframe>
                                             </div>
                                         </div>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Video Player View */}
-                        {currentVideo && (
-                            <div className="max-w-5xl mx-auto animate-in slide-in-from-bottom-4 duration-500">
-                                <button onClick={() => setCurrentVideo(null)} className="mb-8 text-slate-400 hover:text-emerald-400 text-[10px] font-bold uppercase tracking-widest flex items-center gap-3">
-                                    <i className="fas fa-arrow-left"></i> Kembali ke List
-                                </button>
-                                <div className="glass-panel p-2 rounded-[2rem] overflow-hidden bg-black shadow-2xl border border-white/10">
-                                    <div className="video-wrapper">
-                                        <iframe 
-                                            src={forcePreviewUrl(currentVideo.url)} 
-                                            allow="autoplay; fullscreen" 
-                                            allowFullScreen
-                                        ></iframe>
+                                        <div className="mt-8">
+                                            <h1 className="text-2xl font-black text-white italic uppercase tracking-tight">{currentVideo.title}</h1>
+                                            <p className="text-emerald-400 text-xs font-bold mt-2 uppercase tracking-widest">{selectedFolder.name}</p>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="mt-8">
-                                    <h1 className="text-2xl font-black text-white italic uppercase tracking-tight">{currentVideo.title}</h1>
-                                    <p className="text-emerald-400 text-xs font-bold mt-2 uppercase tracking-widest">{selectedFolder.name}</p>
-                                </div>
-                            </div>
-                        )}
+                                )}
 
-                        {/* Try Out List View */}
-                        {isTOListActive && (
-                            <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 animate-in fade-in">
-                                {tryOuts.map(to => (
-                                    <div key={to.id} onClick={() => setActiveTryOut(to)} className="glass-card p-8 rounded-[2rem] cursor-pointer">
-                                        <h3 className="font-extrabold text-white uppercase italic">{to.title}</h3>
-                                        <p className="text-xs text-indigo-400 mt-2 font-bold uppercase tracking-widest">Mulai Try Out</p>
+                                {isTOListActive && (
+                                    <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 animate-in fade-in">
+                                        {tryOuts.map(to => (
+                                            <div key={to.id} onClick={() => setActiveTryOut(to)} className="glass-card p-8 rounded-[2rem] cursor-pointer">
+                                                <h3 className="font-extrabold text-white uppercase italic">{to.title}</h3>
+                                                <p className="text-xs text-indigo-400 mt-2 font-bold uppercase tracking-widest">Mulai Try Out</p>
+                                            </div>
+                                        ))}
                                     </div>
-                                ))}
-                            </div>
-                        )}
+                                )}
 
-                        {/* Try Out Frame View */}
-                        {activeTryOut && (
-                            <div className="max-w-6xl mx-auto h-full flex flex-col">
-                                <button onClick={() => setIsTOListActive(true)} className="mb-6 text-slate-400 hover:text-indigo-400 text-[10px] font-bold uppercase flex items-center gap-3">
-                                    <i className="fas fa-chevron-left"></i> Daftar Try Out
-                                </button>
-                                <div className="glass-panel rounded-[2rem] overflow-hidden flex-1 tryout-frame-container">
-                                    <iframe src={activeTryOut.url} className="w-full h-full border-none"></iframe>
-                                </div>
-                            </div>
-                        )}
-                    </main>
+                                {activeTryOut && (
+                                    <div className="max-w-6xl mx-auto h-full flex flex-col">
+                                        <button onClick={() => setIsTOListActive(true)} className="mb-6 text-slate-400 hover:text-indigo-400 text-[10px] font-bold uppercase flex items-center gap-3">
+                                            <i className="fas fa-chevron-left"></i> Daftar Try Out
+                                        </button>
+                                        <div className="glass-panel rounded-[2rem] overflow-hidden flex-1 tryout-frame-container">
+                                            <iframe src={activeTryOut.url} className="w-full h-full border-none"></iframe>
+                                        </div>
+                                    </div>
+                                )}
+                            </main>
+                        </div>
+                    )}
 
+                    {/* Mobile Sidebar Overlay */}
                     {isSidebarOpen && <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-40 md:hidden" onClick={() => setIsSidebarOpen(false)}></div>}
                 </div>
             );
